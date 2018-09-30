@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_name }}{% endblock title %}
+{% block page_stylesheets %}
+    {# Custom css, if any. #}
+    <link href="/static/sb_admin_2/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+{% endblock page_stylesheets %}
+
+{% block page_javascripts %}
+    {# Custom JavaScript, if any. #}
+{% endblock page_javascripts %}
+
+<!-- Add the page hierarchy here -->
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active">{{ page_name }}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div>
+        <div class="row">
+            <div class="col-md-12">
+                <h3>{{ page_name }}</h3>
+            </div>
+        </div>
+
+        <div class="row" style="padding-top: 16px">
+            <div class="col-md-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Public Service Announcement</div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for psa in psa_list %}
+                                    <tr>
+                                        <td>{{ psa.id }}</td>
+                                        <td>{{ psa.title }}</td>
+                                        <td>{{ psa.description }}</td>
+                                        <td>Edit | Delete</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <button class="btn btn-default btn-block" onclick="location.href='/new_publicserviceannouncement'">
+                    Add Public Service Announcement
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

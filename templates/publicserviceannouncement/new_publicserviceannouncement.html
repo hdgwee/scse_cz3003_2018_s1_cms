@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_name }}{% endblock title %}
+{% block page_stylesheets %}
+    <link href="/static/sb_admin_2/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+{% endblock page_stylesheets %}
+
+{% block page_javascripts %}
+    <script>
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                const csrfToken = getCookie('csrftoken');
+                xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                console.log("CSRF Token set: " + csrfToken);
+            }
+        });
+
+        function submit() {
+            var data = {
+                'title': document.getElementById('title').value,
+                'description': document.getElementById('description').value
+            };
+
+            $.ajax({
+                url: '/add_publicserviceannouncement/',
+                type: 'post',
+                data: data,
+                success: function (msg) {
+                    if (msg === "successful") {
+                        console.log("successful")
+                    }
+                    else {
+                        console.log("failed")
+                    }
+                },
+                error: function (msg, status, jqxhr) {
+                }
+            });
+        }
+    </script>
+{% endblock page_javascripts %}
+
+<!-- Add the page hierarchy here -->
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active">{{ page_name }}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div>
+        <div class="row">
+            <div class="col-md-12">
+                <h3>{{ page_name }}</h3>
+            </div>
+        </div>
+
+        <div class="row" style="padding-top: 16px">
+            <form method="post"> {% csrf_token %}
+                <div class="col-md-10">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input id="title" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <button class="btn btn-primary btn-block" onsubmit="submit()">
+                        Add Public Service Announcement
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

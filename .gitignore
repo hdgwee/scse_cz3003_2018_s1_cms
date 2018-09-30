@@ -80,5 +80,8 @@ fabric.properties
 # Sonarlint plugin
 .idea/sonarlint
 
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
 
 # End of https://www.gitignore.io/api/pycharm
