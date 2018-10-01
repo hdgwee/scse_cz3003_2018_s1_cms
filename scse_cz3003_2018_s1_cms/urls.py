@@ -1,21 +1,21 @@
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.urls import path
 
-from scse_cz3003_2018_s1_cms_app.views import base_views, response
+from scse_cz3003_2018_s1_cms_app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # View
-    path('', base_views.home, name='home'),
+    # Views
+    path('', views.home, name='home'),
     
-    path('view_publicserviceannouncement', base_views.view_publicserviceannouncement
+    path('view_publicserviceannouncement', views.view_publicserviceannouncement
          , name='view_publicserviceannouncement'),
 
-    path('new_publicserviceannouncement', base_views.new_publicserviceannouncement
+    path('new_publicserviceannouncement', views.new_publicserviceannouncement
          , name='new_publicserviceannouncement'),
 
-    # HTTP POST Request
-    path('add_publicserviceannouncement', response.add_publicserviceannouncement
+    # HTTP POST Requests
+    path('add_publicserviceannouncement', views.add_publicserviceannouncement
          , name='add_publicserviceannouncement')
 ]

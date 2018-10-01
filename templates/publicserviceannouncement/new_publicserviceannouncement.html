@@ -6,6 +6,22 @@
 
 {% block page_javascripts %}
     <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
         $.ajaxSetup({
             beforeSend: function(xhr, settings) {
                 const csrfToken = getCookie('csrftoken');
@@ -14,14 +30,14 @@
             }
         });
 
-        function submit() {
+        function submitForm() {
             var data = {
                 'title': document.getElementById('title').value,
                 'description': document.getElementById('description').value
             };
 
             $.ajax({
-                url: '/add_publicserviceannouncement/',
+                url: '/add_publicserviceannouncement',
                 type: 'post',
                 data: data,
                 success: function (msg) {
@@ -55,7 +71,7 @@
 
         <div class="row" style="padding-top: 16px">
             <form method="post"> {% csrf_token %}
-                <div class="col-md-10">
+                <div class="col-md-12">
                     <div class="form-group">
                         <label for="title">Title</label>
                         <input id="title" class="form-control">
@@ -66,7 +82,7 @@
                         <textarea id="description" class="form-control" rows="3"></textarea>
                     </div>
 
-                    <button class="btn btn-primary btn-block" onsubmit="submit()">
+                    <button class="btn btn-primary btn-block" onclick="submitForm();">
                         Add Public Service Announcement
                     </button>
                 </div>
