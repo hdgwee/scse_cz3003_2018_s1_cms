@@ -21,10 +21,3 @@ class PublicServiceAnnouncement(models.Model):
 class SocialMedia(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=128)
-
-
-class Publication(models.Model):
-    id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User, on_delete=None)
-    public_service_announcement_id = models.ForeignKey(PublicServiceAnnouncement, on_delete=None)
-    social_media_id = models.ForeignKey(SocialMedia, on_delete=None)

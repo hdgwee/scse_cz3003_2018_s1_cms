@@ -111,13 +111,15 @@
 
         <div id="page-wrapper">
             <div class="row">
-                <ol class="breadcrumb" style="margin-top: 16px;">
-                    {% block breadcrumb %}
-                    {% endblock breadcrumb %}
-                </ol>
+                <div style="padding-left: 16px; padding-right: 16px">
+                    <ol class="breadcrumb" style="margin-top: 16px;">
+                        {% block breadcrumb %}
+                        {% endblock breadcrumb %}
+                    </ol>
 
-                {% block content %}
-                {% endblock content %}
+                    {% block content %}
+                    {% endblock content %}
+                </div>
 
                 <footer class="sticky-footer" style="padding-top: 32px">
                     <div class="container">
