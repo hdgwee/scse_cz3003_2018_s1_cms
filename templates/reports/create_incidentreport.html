@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_name }}{% endblock title %}
+{% block page_stylesheets %}
+    <link href="/static/sb_admin_2/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+{% endblock page_stylesheets %}
+
+{% block page_javascripts %}
+    <script>
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                const csrfToken = getCookie('csrftoken');
+                xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                console.log("CSRF Token set: " + csrfToken);
+            }
+        });
+
+        function submitForm() {
+
+            $('#input-form').hide();
+            $('#alert-success').hide();
+            $('#alert-danger').hide();
+            $('#alert-missing-required-input').hide();
+
+            //figure out how to retrieve source
+            var e = document.getElementById("crisis_drop_down");
+
+
+            if(    document.getElementById('name').value.length === 0
+            || document.getElementById('description').value.length === 0
+            || document.getElementById('mobile_number').value.length === 0
+            || document.getElementById('date').value.length === 0
+            || document.getElementById('time').value.length === 0
+            || document.getElementById('postal_code').value.length === 0
+            || document.getElementById('unit_number').value.length === 0
+            || document.getElementById('street').value.length === 0
+            || document.getElementById('longitude').value.length === 0
+            || document.getElementById('latitude').value.length === 0
+            || e.options[e.selectedIndex].value === 'none selected'
+            || document.getElementById('source').value.length === 0)
+            {
+                $('#alert-missing-required-input').show();
+                $('#input-form').show();
+            }
+            else{
+                var data = {
+                    'name': document.getElementById('name').value,
+                    'description': document.getElementById('description').value,
+                    'mobile_number': document.getElementById('mobile_number').value,
+                    'date': document.getElementById('date').value,
+                    'time': document.getElementById('time').value,
+                    'postal_code': document.getElementById('postal_code').value,
+                    'unit_number': document.getElementById('unit_number').value,
+                    'street': document.getElementById('street').value,
+                    'longitude': document.getElementById('longitude').value,
+                    'latitude': document.getElementById('latitude').value,
+                    'crisis_level': e.options[e.selectedIndex].value ,
+                    'source': document.getElementById('source').value,
+
+                };
+
+                $.ajax({
+                    url: '/reports/add_incidentreport/',
+                    type: 'post',
+                    data: data,
+                    success: function (msg) {
+                        if (msg === "successful") {
+                            $('#alert-success').show();
+                        }
+                        else {
+                            $('#alert-danger').show();
+                            $('#input-form').show();
+                        }
+                    },
+                    error: function (msg, status, jqxhr) {
+                        $('#alert-danger').show();
+                        $('#input-form').show();
+                    }
+                });
+            }
+
+            return false;
+        }
+    </script>
+{% endblock page_javascripts %}
+
+<!-- Add the page hierarchy here -->
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active">{{ page_name }}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h3>{{ page_name }}</h3>
+        </div>
+    </div>
+
+    <div id="alert-success" class="row" style="display: none">
+        <div class="col-md-12">
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Success!</strong> Incident report has been successfully created!
+            </div>
+        </div>
+    </div>
+
+    <div id="alert-danger" class="row" style="display: none">
+        <div class="col-md-12">
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Unsuccessful!</strong> Please try submitting the form again!
+            </div>
+        </div>
+    </div>
+
+    <div id="alert-missing-required-input" class="row" style="display: none">
+        <div class="col-md-12">
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Please ensure all field(s) has been filled!
+            </div>
+        </div>
+    </div>
+
+    <div id="input-form" class="row">
+        <form action="" method="post"> {% csrf_token %}
+            <div id="fields" class="col-md-12">
+                <div class="form-group">
+                    <label for="name">Name of Caller</label>
+                    <input id="name" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" class="form-control" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="mobile_number">Mobile Number</label>
+                    <input id="mobile_number" type="number" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input id="date" type="date" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="time">Time</label>
+                    <input id="time" type="time" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="street">Street</label>
+                    <input id="street"  class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="unit_number">Unit Number</label>
+                    <input id="unit_number"  class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="postal_code">Postal Code</label>
+                    <input id="postal_code"  class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="longitude">Longitude</label>
+                    <input id="longitude" type="number"  class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="latitude">Latitude</label>
+                    <input id="latitude" type="number"  class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="crisis_level">Crisis Level</label>
+                    <select id="crisis_drop_down" class="form-control" id="sel1">
+                        <option value="none selected">Select an option</option>
+                        {% for crisis in crisis_level %}
+                             <option value="{{ crisis.name }}">{{ crisis.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="source">Source Name</label>
+                    <input id="source"  class="form-control" required>
+                </div>
+
+                <button class="btn btn-primary btn-block" onclick="return submitForm();" type="submit">
+                    Create Incident Report
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

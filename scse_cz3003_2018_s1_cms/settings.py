@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'scse_cz3003_2018_s1_cms_app.apps.ScseCz30032018S1CmsAppConfig',
+    'reports.apps.ScseCz30032018S1CmsReportAppConfig'
 ]
 
 MIDDLEWARE = [

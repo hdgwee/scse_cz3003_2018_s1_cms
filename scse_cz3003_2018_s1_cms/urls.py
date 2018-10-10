@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from scse_cz3003_2018_s1_cms_app import views
 
@@ -31,5 +31,8 @@ urlpatterns = [
          , name='delete_publicserviceannouncement'),
 
     path('get_all_reusable_publicserviceannouncement', views.get_all_reusable_publicserviceannouncement
-         , name='get_all_reusable_publicserviceannouncement')
+         , name='get_all_reusable_publicserviceannouncement'),
+
+    path('reports/', include('reports.urls'))
+
 ]

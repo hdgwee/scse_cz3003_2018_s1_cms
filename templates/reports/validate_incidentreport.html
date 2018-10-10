@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_name }}{% endblock title %}
+{% block page_stylesheets %}
+    <link href="/static/sb_admin_2/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+{% endblock page_stylesheets %}
+
+{% block page_javascripts %}
+    <script>
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                const csrfToken = getCookie('csrftoken');
+                xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                console.log("CSRF Token set: " + csrfToken);
+            }
+        });
+
+        function submitValidationRes() {
+
+            $('#input-form').hide();
+            $('#alert-success').hide();
+            $('#alert-danger').hide();
+            $('#alert-missing-required-input').hide();
+
+
+            if( !$('#scdf').is(':checked') &&
+                !$('#police').is(':checked') &&
+                !$('#gas').is(':checked')
+            )
+            {
+                $('#alert-missing-required-input').show();
+                $('#input-form').show();
+            }
+            else{
+                var data = {
+                    'id': {{ incident_report.ReportID }},
+                    'scdf': $('#scdf').is(':checked'),
+                    'police': $('#police').is(':checked'),
+                    'gas': $('#gas').is(':checked'),
+                    'severity': $("#severity input[type='radio']:checked").val()
+                };
+
+                $.ajax({
+                    url: '/reports/submit_validationresponse/',
+                    type: 'post',
+                    data: data,
+                    success: function (msg) {
+                        if (msg === "successful") {
+                            $('#alert-success').show();
+                        }
+                        else {
+                            $('#alert-danger').show();
+                            $('#input-form').show();
+                        }
+                    },
+                    error: function (msg, status, jqxhr) {
+                        $('#alert-danger').show();
+                        $('#input-form').show();
+                    }
+                });
+            }
+
+            return false;
+        }
+        function submitInvalidationResponse() {
+
+            $('#input-form').hide();
+            $('#alert-success').hide();
+            $('#alert-danger').hide();
+            $('#alert-missing-required-input').hide();
+
+
+            var data = {
+                'id': {{ incident_report.ReportID }},
+            };
+
+            $.ajax({
+                url: '/reports/submit_invalidation/',
+                type: 'post',
+                data: data,
+                success: function (msg) {
+                    if (msg === "successful") {
+                        $('#alert-success').show();
+                    }
+                    else {
+                        $('#alert-danger').show();
+                        $('#input-form').show();
+                    }
+                },
+                error: function (msg, status, jqxhr) {
+                    $('#alert-danger').show();
+                    $('#input-form').show();
+                }
+            });
+
+            return false;
+        }
+    </script>
+{% endblock page_javascripts %}
+
+<!-- Add the page hierarchy here -->
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active">{{ page_name }}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h3>{{ page_name }}</h3>
+        </div>
+    </div>
+
+    <div id="alert-success" class="row" style="display: none">
+        <div class="col-md-12">
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Success!</strong> Incident report has been processed!
+            </div>
+            <button class="btn btn-secondary btn-lg" >
+                 <a href="/reports/validate">Validate the next incident report</a>
+            </button>
+        </div>
+    </div>
+
+
+    <div id="alert-danger" class="row" style="display: none">
+        <div class="col-md-12">
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Unsuccessful!</strong> Please try submitting the form again!
+            </div>
+        </div>
+    </div>
+
+    <div id="alert-missing-required-input" class="row" style="display: none">
+        <div class="col-md-12">
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                Please ensure all field(s) has been filled!
+            </div>
+        </div>
+    </div>
+
+    <div id="input-form" class="row">
+        <form action="" method="post"> {% csrf_token %}
+            <div id="fields" class="col-md-12">
+                {% for field, entry in incident_report.items %}
+                    <div class="form-group">
+                        <label for="name">{{ field }}</label>
+                        <p class="form-control-static" id="name" class="form-control" required>{{ entry }}</p>
+                    </div>
+                {%  endfor %}
+                <div class="form-group">
+                    <label>Emergency Response Agencies</label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="scdf"> SCDF
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="police"> Police
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="gas">Gas Leakage
+                    </label>
+                </div>
+                <div class="form-group" id="severity">
+                    <label>Severity</label>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="low" value="low" checked="">Low
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="medium" value="medium">Medium
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="high" value="high">High
+                        </label>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-lg" onclick="return submitValidationRes();" type="submit">
+                    Validate Incident Report
+                </button>
+                <button class="btn btn-secondary btn-lg" onclick="return submitInvalidationResponse();" type="submit">
+                    Mark as Invalid
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
