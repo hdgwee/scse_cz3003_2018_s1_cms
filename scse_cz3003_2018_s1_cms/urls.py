@@ -33,6 +33,22 @@ urlpatterns = [
     path('get_all_reusable_publicserviceannouncement', views.get_all_reusable_publicserviceannouncement
          , name='get_all_reusable_publicserviceannouncement'),
 
-    path('reports/', include('reports.urls'))
+    #incident reports start here
+
+    # path('reports/', include('reports.urls'))
+
+    path('reports/create/', views.create_incidentreport, name='create_incidentreport'),
+
+    path('reports/status/', views.generate_statusreport, name='generate_statusreport'),
+
+    path('reports/validate/', views.validate_incidentreport, name='validate_incidentreport'),
+    # APIs
+    path('reports/submit_statusreports/', views.submit_statusreports, name = 'submit_statusreports'),
+
+    path('reports/add_incidentreport/', views.add_incidentreport, name='add_incidentreport'),
+
+    path('reports/submit_validationresponse/', views.submit_validationresponse, name='submit_validationresponse'),
+
+    path('reports/submit_invalidation/', views.submit_invalidation, name='submit_invalidation'),
 
 ]
