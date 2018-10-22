@@ -37,12 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'scse_cz3003_2018_s1_cms_app.apps.ScseCz30032018S1CmsAppConfig'
+    'scse_cz3003_2018_s1_cms_app.apps.ScseCz30032018S1CmsAppConfig',
+    'corsheaders'
     # 'reports.apps.ScseCz30032018S1CmsReportAppConfig'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

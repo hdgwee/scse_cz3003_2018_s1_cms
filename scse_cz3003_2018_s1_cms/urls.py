@@ -9,7 +9,7 @@ urlpatterns = [
     ###################################################################################################################
     # Views
     path('', views.home, name='home'),
-    
+
     path('view_publicserviceannouncement', views.view_publicserviceannouncement
          , name='view_publicserviceannouncement'),
 
@@ -50,5 +50,7 @@ urlpatterns = [
     path('reports/submit_validationresponse/', views.submit_validationresponse, name='submit_validationresponse'),
 
     path('reports/submit_invalidation/', views.submit_invalidation, name='submit_invalidation'),
+
+    path('reports/get_allincidentreport/', views.get_allincidentreport, name ='get_allincidentreport')
 
 ]

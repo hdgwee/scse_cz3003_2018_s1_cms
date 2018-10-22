@@ -2,7 +2,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render
 from django.core import serializers
 from django.db.models import Q
-
+from django.views.decorators.csrf import csrf_exempt
 from scse_cz3003_2018_s1_cms_app.models import PublicServiceAnnouncement
 
 
@@ -114,7 +114,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from scse_cz3003_2018_s1_cms_app.models import CrisisLevel, IncidentReport, Source, StatusReport
 from decimal import Decimal
-
+import json
 import datetime
 from pytz import timezone
 import json
@@ -153,6 +153,24 @@ def generate_statusreport(request):
 
     })
 
+################################# api for pmo ######################################
+@csrf_exempt
+def get_allincidentreport(request):
+    all_incident_reports = IncidentReport.objects.values()
+
+    for ir in all_incident_reports:
+        dt = ir['date_time']
+        # Pass a date to the ir so that it can be hidden
+        ir['date'] = dt.strftime("%Y-%m-%d")
+
+        ir['date_time'] = dt.strftime("%Y %B %d %I:%M%p")
+        ir['mobile_number'] = str(ir['mobile_number'])
+        ir['longitude'] = str(ir['longitude'])
+        ir['latitude'] = str(ir['latitude'])
+        ir['crisis_level_id'] = CrisisLevel.objects.get(id=ir['crisis_level_id']).name
+        ir['source_id'] = Source.objects.get(id=ir['source_id']).name
+    print(all_incident_reports)
+    return  HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
 
 def validate_incidentreport(request):
     all_incident_reports = IncidentReport.objects.values()
@@ -289,3 +307,4 @@ def add_incidentreport(request):
 
             ir.save()
             return HttpResponse('successful')
+############################################################# login page ####################################
