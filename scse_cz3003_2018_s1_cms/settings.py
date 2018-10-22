@@ -24,8 +24,10 @@ SECRET_KEY = '^td$^l#i9eh3@trlz3easyq)9ix@3y%5w@=jk#6zwets(o_7!3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+ALLOWED_HOSTS = ['*']
 
-ALLOWED_HOSTS = []
 
 
 # Application definition
