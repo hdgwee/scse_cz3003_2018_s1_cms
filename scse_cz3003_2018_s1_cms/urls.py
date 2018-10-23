@@ -5,7 +5,6 @@ from scse_cz3003_2018_s1_cms_app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
     ###################################################################################################################
     # Views
     path('', views.home, name='home'),
@@ -51,6 +50,9 @@ urlpatterns = [
 
     path('reports/submit_invalidation/', views.submit_invalidation, name='submit_invalidation'),
 
-    path('reports/get_allincidentreport/', views.get_allincidentreport, name ='get_allincidentreport')
+    path('reports/get_allincidentreport/', views.get_allincidentreport, name ='get_allincidentreport'),
 
+    path('login/', views.login, name='login'),
+
+    path('authorization/', views.authorization, name='authorization')
 ]

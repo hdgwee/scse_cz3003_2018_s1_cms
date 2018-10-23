@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
 
     <meta charset="utf-8">
@@ -48,16 +49,12 @@
                       <div class="form-group">
                         <h1>Please login</h1>
                         <br>
-                        <form action="" method="post">
-                          <input class="form-control" type="text" placeholder="Username" name="username" value="{{
-                            request.form.username }}">
-                          <input class="form-control" type="password" placeholder="Password" name="password" value="{{
-                            request.form.password }}">
+                        <form action="/authorization/" method="post">
+                          <input class="form-control" type="text" placeholder="Username" name="username" >
+                          <input class="form-control" type="password" placeholder="Password" name="password" >
                           <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">
                         </form>
-                        {% if error %}
-                          <p class="error"><strong>Error:</strong> {{ error }}
-                        {% endif %}
+
                       </div>
 
                     </div>

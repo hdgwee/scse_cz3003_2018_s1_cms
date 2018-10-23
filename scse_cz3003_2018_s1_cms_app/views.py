@@ -4,7 +4,7 @@ from django.core import serializers
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from scse_cz3003_2018_s1_cms_app.models import PublicServiceAnnouncement
-
+import requests
 
 #######################################################################################################################
 # Views
@@ -169,8 +169,8 @@ def get_allincidentreport(request):
         ir['latitude'] = str(ir['latitude'])
         ir['crisis_level_id'] = CrisisLevel.objects.get(id=ir['crisis_level_id']).name
         ir['source_id'] = Source.objects.get(id=ir['source_id']).name
-    print(all_incident_reports)
-    return  HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
+
+    return HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
 
 def validate_incidentreport(request):
     all_incident_reports = IncidentReport.objects.values()
@@ -307,4 +307,45 @@ def add_incidentreport(request):
 
             ir.save()
             return HttpResponse('successful')
+
+
 ############################################################# login page ####################################
+
+@csrf_exempt
+def authorization(request):
+
+    if request.method == 'POST':
+        try:
+            # Log the user in
+            dictToSend = {
+                'username': request.POST.get('username'),
+                'password': request.POST.get('password')
+            }
+            print(dictToSend)
+            session_cookie = requests.post('http://localhost:5002/login', json=dictToSend)
+
+            print('session_cookie',session_cookie.text[:10])
+            if not (session_cookie.text == 'error'):
+                print('creating session')
+                response = HttpResponse("successful")
+
+                response.set_cookie('auth', session_cookie.text)
+
+                print("session created")
+                dictToSend = {
+                    'cookie': session_cookie.text
+                }
+                role = requests.post('http://localhost:5002/checkCookie', json=dictToSend)
+                print(role.text)
+                return response
+        except Exception:
+            response = HttpResponse("fail")
+            return response
+    else:
+        print("not a post")
+    response = HttpResponse("fail")
+    return response
+
+
+def login(request):
+    return render(request, 'login.html')
