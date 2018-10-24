@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from firebase import firebase
 import json
-
+from django.views.decorators.csrf import csrf_exempt
 temp = firebase.FirebaseApplication('https://testapp-ab172.firebaseio.com/', None)
 
 def notification_read(request):
@@ -16,7 +16,7 @@ def notification_read(request):
     temp.delete('/notification', key)
     return HttpResponseRedirect('/new_publicserviceannouncement')
 
-
+@csrf_exempt
 def psamessagefrompmo(request):
     json_dict = json.loads(request.body)
     title = json_dict["title"]
@@ -27,4 +27,4 @@ def psamessagefrompmo(request):
     #result = temp.post('/notification', new_user, {'print': 'pretty'}, {'X_FANCY_HEADER': 'VERY FANCY'})
     result = temp.post('/notification', data={"title": title , "message": message}, params={'print': 'pretty'})
     print(result)
-    return HttpResponse('')
+    return HttpResponse('Success')
