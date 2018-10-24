@@ -36,7 +36,12 @@
 
         <!-- jQuery -->
         <script src="/static/sb_admin_2/vendor/jquery/jquery.min.js"></script>
+        <!--<script src="/static/sb_admin_2/vendor/jquery/jquery.min.js"></script>-->
         <!--<script src="/static/sb_admin_2/js/jquery-1.12.4.js"></script>-->
+
+        <!-- Firebase Notification -->
+        <script src="https://www.gstatic.com/firebasejs/3.6.10/firebase.js"></script>
+
 
         <!-- Bootstrap Core JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
@@ -76,6 +81,69 @@
                 }
                 return cookieValue;
             }
+
+
+            //=============Code For Notification==============
+
+            window.onload=function(){
+                var dnperm = document.getElementById('dnperm');
+
+                dnperm.addEventListener('click',function(e){
+                    e.preventDefault();
+                    if(!window.Notification){
+                        alert('Not supported');
+                    }else{
+                        Notification.requestPermission().then(function(p){
+                            if(p=='denied'){
+                                alert('You denied to show notification');
+                            }else if(p=='granted'){
+                                alert('You allowed to show notification');
+                            }
+                        });
+                    }
+                });
+
+                var config = {
+                    apiKey: "AIzaSyAhKJCZBtOu_ffdBHczrEHxCORktWBcWQo",
+                    authDomain: "testapp-ab172.firebaseapp.com",
+                    databaseURL: "https://testapp-ab172.firebaseio.com",
+                    projectId: "testapp-ab172",
+                    storageBucket: "testapp-ab172.appspot.com",
+                    messagingSenderId: "1039546222856"
+                };
+                firebase.initializeApp(config);
+
+                var database = firebase.database().ref().child("notification");
+
+
+                database.on('child_added', function(data) {
+                    if(Notification.permission!=='default'){
+                                var notify;
+
+                                    notify= new Notification(' Title: '+data.val().title,{
+                                        'body': data.val().message,
+                                        'icon': 'templates/image/images.jpeg',
+                                        'requireInteraction': true,
+                                        'tag': data.getKey()
+                                    });
+                                    notify.onclick = function(){
+                                        event.preventDefault(); // prevent the browser from focusing the Notification's tab
+                                        //location.href = "/notification_read";
+
+                                        window.location = '/notification_read?tag=' + data.getKey();
+                                        //window.location = '/notification_read';
+                                    }
+                    }else{
+                        alert('Please allow the notification first');
+                    }
+                });
+            }
+
+
+
+
+
+            //====================Ends Here=================
         </script>
 
         <!------------------------------------------------------------------------------------------------------------>
@@ -112,6 +180,9 @@
                         </li>
                         <li>
                             <a href="/reports/validate">Validate Incident Report</a>
+                        </li>
+                        <li>
+                            <a href="#" id="dnperm">Request Permission</a>
                         </li>
                     </ul>
                 </div>

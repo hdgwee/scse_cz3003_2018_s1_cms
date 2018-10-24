@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 
-from scse_cz3003_2018_s1_cms_app.views import reports, announcements, login
+from scse_cz3003_2018_s1_cms_app.views import reports, announcements, login, notification
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -54,5 +54,10 @@ urlpatterns = [
 
     path('login/', login.login, name='login'),
 
-    path('authorization/', login.authorization, name='authorization')
+    path('authorization/', login.authorization, name='authorization'),
+
+    #=====Notification=====#
+    path('notification_read', notification.notification_read, name='notificationRead'),
+
+    path('psamessagefrompmo', notification.psamessagefrompmo, name='psamessagefrompmo')
 ]
