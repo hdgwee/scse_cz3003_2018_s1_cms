@@ -1,18 +1,12 @@
-from django.http import HttpResponse, Http404
-from django.shortcuts import render
 from django.core import serializers
 from django.db.models import Q
-from django.views.decorators.csrf import csrf_exempt
-from scse_cz3003_2018_s1_cms_app.models import PublicServiceAnnouncement
-import requests
-from django.shortcuts import render
 from django.http import HttpResponse, Http404
-from scse_cz3003_2018_s1_cms_app.models import CrisisLevel, IncidentReport, Source, StatusReport
-from decimal import Decimal
-import json
-import datetime
-from pytz import timezone
-import json
+from django.shortcuts import render
+
+from scse_cz3003_2018_s1_cms_app.connector.psi import get_psi_from_source
+from scse_cz3003_2018_s1_cms_app.connector.dengue import get_dengue_info_from_source
+from scse_cz3003_2018_s1_cms_app.models import PublicServiceAnnouncement
+
 
 #######################################################################################################################
 # Views

@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path
 
 from scse_cz3003_2018_s1_cms_app.views import reports, announcements, login, notification
+from scse_cz3003_2018_s1_cms_app.connector import psi, dengue
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -59,5 +60,10 @@ urlpatterns = [
     #=====Notification=====#
     path('notification_read', notification.notification_read, name='notificationRead'),
 
-    path('psamessagefrompmo', notification.psamessagefrompmo, name='psamessagefrompmo')
+    path('psamessagefrompmo', notification.psamessagefrompmo, name='psamessagefrompmo'),
+
+    #=====Crawled Data=====#
+    path('get_psi', psi.get_psi, name='get_psi'),
+
+    path('get_dengue_info', dengue.get_dengue_info, name='get_dengue_info')
 ]

@@ -23,7 +23,7 @@ class SocialMedia(models.Model):
     name = models.CharField(max_length=128)
 
 
-#Start of incident report models
+# Start of incident report models
 class CrisisLevel(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=128, unique=True)
@@ -51,7 +51,33 @@ class IncidentReport(models.Model):
     source = models.ForeignKey(Source, on_delete=models.PROTECT)
     validated = models.CharField(default='unseen', max_length=128)
 
+
 class StatusReport(models.Model):
     id = models.AutoField(primary_key=True)
     date_time = models.DateTimeField()
     incident_report = models.ManyToManyField(IncidentReport)
+
+
+class PsiType(models.Model):
+    id = models.AutoField(primary_key=True)
+    human_readable_name = models.CharField(max_length=128)
+    machine_readable_name = models.CharField(max_length=128)
+
+
+class Psi(models.Model):
+    id = models.AutoField(primary_key=True)
+    national = models.DecimalField(default=0, max_digits=8, decimal_places=6)
+    north = models.DecimalField(default=0, max_digits=8, decimal_places=6)
+    south = models.DecimalField(default=0, max_digits=8, decimal_places=6)
+    east = models.DecimalField(default=0, max_digits=8, decimal_places=6)
+    west = models.DecimalField(default=0, max_digits=8, decimal_places=6)
+    central = models.DecimalField(default=0, max_digits=8, decimal_places=6)
+    type = models.ForeignKey(PsiType, on_delete=models.PROTECT)
+    date_time = models.DateTimeField()
+
+
+class Dengue(models.Model):
+    id = models.AutoField(primary_key=True)
+    date_time = models.DateTimeField()
+    lat = models.DecimalField(max_digits=30, decimal_places=20)
+    lng = models.DecimalField(max_digits=30, decimal_places=20)
