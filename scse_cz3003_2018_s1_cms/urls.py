@@ -12,6 +12,9 @@ urlpatterns = [
     path('view_publicserviceannouncement', announcements.view_publicserviceannouncement
          , name='view_publicserviceannouncement'),
 
+    path('publish_publicserviceannouncement', announcements.publish_publicserviceannouncement
+         , name='publish_publicserviceannouncement'),
+
     path('new_publicserviceannouncement', announcements.new_publicserviceannouncement
          , name='new_publicserviceannouncement'),
 

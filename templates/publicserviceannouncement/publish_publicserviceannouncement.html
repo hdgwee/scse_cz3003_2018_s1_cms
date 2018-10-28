@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_name }}{% endblock title %}
+{% block page_stylesheets %}
+    {# Custom css, if any. #}
+    <link href="/static/sb_admin_2/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+{% endblock page_stylesheets %}
+
+{% block page_javascripts %}
+    <script>
+        window.onload = function() {
+            document.getElementById('search').value = '';
+        };
+
+        var publicserviceannouncementIdToBeRemoved = undefined;
+
+        $(document).on("click", ".open-delete-psa-dialog", function () {
+            publicserviceannouncementIdToBeRemoved = $(this).data('id');
+            var publicserviceannouncementTitle = $(this).data('title');
+            var publicserviceannouncementDescription = $(this).data('description');
+
+            $(".modal-body #delete-modal-title").text(publicserviceannouncementTitle);
+            $(".modal-body #delete-modal-description").text(publicserviceannouncementDescription);
+        });
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                const csrfToken = getCookie('csrftoken');
+                xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                console.log("CSRF Token set: " + csrfToken);
+            }
+        });
+
+        function deletePsa() {
+            var data = {
+                'id': publicserviceannouncementIdToBeRemoved
+            };
+
+            $('#input-form').hide();
+            $('#alert-success').hide();
+            $('#alert-danger').hide();
+
+            $.ajax({
+                url: '/delete_publicserviceannouncement',
+                type: 'post',
+                data: data,
+                success: function (msg) {
+                    if (msg === "successful") {
+                        $('#alert-success').show();
+
+                        $.ajax({
+                            url: "/get_all_reusable_publicserviceannouncement",
+                            cache: false,
+                            method: "get",
+                        }).done(function(data) {
+                            var new_psa_list = "";
+                            for(i=0; i<data.length; i++) {
+                                new_psa_list +=
+                                    "<tr>\n" +
+                                    "<td>" + data[i].fields.title + "</td>\n" +
+                                    "<td>" + data[i].fields.description + "</td>\n" +
+                                    "<td><a href=\"/edit_publicserviceannouncement/" + data[i].pk + "\">Edit</a> | <a data-id=\"" + data[i].pk + "\" data-title=\"" + data[i].fields.title + "\" data-description=\"" + data[i].fields.description + "\" class=\"open-delete-psa-dialog\" data-toggle=\"modal\" data-target=\"#deleteModal\">Delete</a></td>" +
+                                    "</tr>"
+                            }
+
+                            $('#psa-list').html(new_psa_list);
+                        });
+                    }
+                    else {
+                        $('#alert-danger').show();
+                        $('#input-form').show();
+                    }
+                },
+                error: function (msg, status, jqxhr) {
+                    $('#alert-danger').show();
+                    $('#input-form').show();
+                }
+            });
+
+            return false;
+        }
+
+        function searchPsa() {
+            var data = {
+                'keyword': document.getElementById('search').value
+            };
+
+            $.ajax({
+                url: "/get_all_reusable_publicserviceannouncement",
+                method: "post",
+                data: data,
+            }).done(function(data) {
+                if(data.length > 0) {
+                    var new_psa_list = "";
+                    for (i = 0; i < data.length; i++) {
+                        new_psa_list +=
+                            "<tr>\n" +
+                            "<td>" + data[i].fields.title + "</td>\n" +
+                            "<td>" + data[i].fields.description + "</td>\n" +
+                            "<td><input type=\"checkbox\"></input></td>" +
+                            "</tr>"
+                    }
+
+                    $('#psa-list').html(new_psa_list);
+                }
+            });
+
+            return false;
+        }
+    </script>
+{% endblock page_javascripts %}
+
+<!-- Add the page hierarchy here -->
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active">{{ page_name }}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3>{{ page_name }}</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10">
+            <input id="search" type="text" class="form-control" placeholder="Filter by..." oninput="searchPsa();">
+        </div>
+
+        <div class="visible-xs visible-sm" style="padding-top: 16px;"></div>
+        <!--
+        <div class="col-md-2">
+            <button class="btn btn-default btn-block" onclick="location.href='/new_publicserviceannouncement'">
+                New PSA
+            </button>
+        </div>
+        -->
+    </div>
+
+    <div id="alert-success" class="row" style="display: none; padding-top: 16px;">
+        <div class="col-md-12">
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Success!</strong> New Public Service Announcement has been successfully added!
+            </div>
+        </div>
+    </div>
+
+    <div id="alert-danger" class="row" style="display: none; padding-top: 16px;">
+        <div class="col-md-12">
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Unsuccessful!</strong> Please try deleting the Public Service Announcement again!
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="padding-top: 16px;">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th style="width: 20%">Title</th>
+                                <th style="width: 70%">Description</th>
+                                <th style="width: 10%">Selected</th>
+                            </tr>
+                            </thead>
+                            <tbody id="psa-list">
+                            {% for psa in psa_list %}
+                                <tr>
+                                    <td>{{ psa.title }}</td>
+                                    <td>{{ psa.description }}</td>
+                                    <td><input class="psa" type="checkbox" name="{{ psa.id }}" value="{{ psa.title }}:  {{ psa.description }}" > </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </br>
+    <div id='fb-root'></div>
+    <script src='http://connect.facebook.net/en_US/all.js'></script>
+
+
+    <button class="btn btn-success" onclick='postToFeed(); return false;'>Publish</button>
+
+    <script>
+    FB.init({appId: "180372472877494", status: true, cookie: true});
+    function postToFeed() {
+        var checks = document.getElementsByClassName("psa");
+        var new_post = "";
+        for(i = 0;i<checks.length; i++){
+            if(checks[i].checked === true){
+                new_post += (checks[i].value + "\n");
+            }
+        }
+        var body = new_post;
+        var a_token = "EAACkDD0sUbYBABv3sjixFCE0OozHICJZAI4dI3xTnGI5PsU6Lk6LhIHfLm0y2BOluxU2gY3JJeHSdhxkJynwZCMoGhN5nZAZCKe5HHrB1xvZAQOt2x4z9l6ZAD7gXXnEB6v1FcCcZCIK2vZAeb3G1iDUFaaI4PCxVshWwVxe9oOg9gZDZD\n"
+        FB.api('/174250080113064/feed', 'post', { message: body, access_token: a_token }, function(response) {
+            if (!response){
+                alert('No response.');
+            }
+            else if (response.error) {
+                alert('Error occured'+ response.error.message );
+            } else {
+                alert('Post ID: ' + response.id);
+            }
+        });
+
+    }
+    </script>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <p class="modal-title" id="deleteModalLabel">Are you sure you want to delete?</p>
+                </div>
+
+                <div class="modal-body">
+                    <h4 id="delete-modal-title"></h4>
+                    <p id="delete-modal-description"></p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="deletePsa();">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

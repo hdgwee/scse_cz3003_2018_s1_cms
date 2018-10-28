@@ -26,6 +26,13 @@ def view_publicserviceannouncement(request):
                       'psa_list': psa_list
                   })
 
+def publish_publicserviceannouncement(request):
+    psa_list = PublicServiceAnnouncement.objects.all().filter(reusable=True)
+    return render(request, 'publicserviceannouncement/publish_publicserviceannouncement.html',
+                  {
+                      'page_name': "Publish Public Service Announcement",
+                      'psa_list': psa_list
+                  })
 
 def new_publicserviceannouncement(request):
     return render(request, 'publicserviceannouncement/new_publicserviceannouncement.html',
