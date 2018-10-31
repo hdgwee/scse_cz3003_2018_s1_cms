@@ -184,13 +184,17 @@
             </div>
         </div>
     </div>
+    <div class="container">
+        <input type="checkbox" id="selectFB" value="Facebook">Facebook<br>
+        <input type="checkbox" id="selectTt" value="Twitter">Twitter<br>
+        <br>
+        <button class="btn btn-success" onclick='postToFeed(); return false;'>Publish</button>
 
-    </br>
+    </div>
+
     <div id='fb-root'></div>
     <script src='http://connect.facebook.net/en_US/all.js'></script>
 
-
-    <button class="btn btn-success" onclick='postToFeed(); return false;'>Publish</button>
 
     <script>
     FB.init({appId: "180372472877494", status: true, cookie: true});
@@ -202,24 +206,38 @@
                 new_post += (checks[i].value + "\n");
             }
         }
-        var body = new_post;
-        var a_token = "EAACkDD0sUbYBABv3sjixFCE0OozHICJZAI4dI3xTnGI5PsU6Lk6LhIHfLm0y2BOluxU2gY3JJeHSdhxkJynwZCMoGhN5nZAZCKe5HHrB1xvZAQOt2x4z9l6ZAD7gXXnEB6v1FcCcZCIK2vZAeb3G1iDUFaaI4PCxVshWwVxe9oOg9gZDZD\n"
-        FB.api('/174250080113064/feed', 'post', { message: body, access_token: a_token }, function(response) {
-            if (!response){
-                alert('No response.');
-            }
-            else if (response.error) {
-                alert('Error occured'+ response.error.message );
-            }
-            else {
-               alert("Successfully published to Facebook.");
-            }
-        });
+        var select_FB = document.getElementById("selectFB");
+        var select_Twitter = document.getElementById("selectTt");
 
-        var url = "https://twitter.com/intent/tweet";
-        var msg = new_post;
-        window.open(url+"?text=" + msg,"", "width=500,height=300");
 
+        if (new_post === ""){
+            alert('No PSA selected.');
+        }
+        else if(select_FB.checked===false && select_Twitter.checked === false){
+            alert('No media selected.');
+        }
+        else{
+            if(select_FB.checked === true){
+                var body = new_post;
+                var a_token = "EAACkDD0sUbYBABv3sjixFCE0OozHICJZAI4dI3xTnGI5PsU6Lk6LhIHfLm0y2BOluxU2gY3JJeHSdhxkJynwZCMoGhN5nZAZCKe5HHrB1xvZAQOt2x4z9l6ZAD7gXXnEB6v1FcCcZCIK2vZAeb3G1iDUFaaI4PCxVshWwVxe9oOg9gZDZD\n"
+                FB.api('/174250080113064/feed', 'post', { message: body, access_token: a_token }, function(response) {
+                    if (!response){
+                        alert('No response.');
+                    }
+                    else if (response.error) {
+                        alert('Error occured'+ response.error.message );
+                    }
+                    else {
+                        alert("Successfully published to Facebook.");
+                    }
+                });
+            }
+            if(select_Twitter.checked === true){
+               var url = "https://twitter.com/intent/tweet";
+               var msg = new_post;
+               window.open(url+"?text=" + msg,"", "width=500,height=300");
+            }
+        }
     }
     </script>
 
