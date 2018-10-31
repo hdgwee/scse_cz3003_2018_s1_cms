@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.core import serializers
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
-from scse_cz3003_2018_s1_cms_app.models import PublicServiceAnnouncement
+
 import requests
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
@@ -23,9 +23,11 @@ import json
 def create_incidentreport(request):
 
     crisis_level = CrisisLevel.objects.all()
+    source = Source.objects.all()
     return render(request, 'reports/create_incidentreport.html',
                   {'page_name': "Create Incident Report",
-                   'crisis_level': crisis_level
+                   'crisis_level': crisis_level,
+                   'source': source
                    })
 
 
@@ -71,7 +73,10 @@ def get_allincidentreport(request):
 
 def validate_incidentreport(request):
     all_incident_reports = IncidentReport.objects.values()
-    ir = all_incident_reports.filter(validated='unseen')[0]
+    all_unseen_reports = all_incident_reports.filter(validated='unseen')
+    if len(all_unseen_reports) == 0:
+        return render(request, 'reports/allincidentreport_validated.html')
+    ir = all_unseen_reports[0]
     ir_formatted = {}
     ir_formatted['ReportID'] = ir['id']
     ir_formatted['Crisis Level'] = CrisisLevel.objects.get(id=ir['crisis_level_id']).name

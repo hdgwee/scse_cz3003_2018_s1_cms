@@ -14,6 +14,42 @@
             }
         });
 
+        function confirmValidationRes() {
+
+            var scdf =  $('#scdf').is(':checked');
+            var police = $('#police').is(':checked');
+            var gas = $('#gas').is(':checked');
+            var severity = $("#severity input[type='radio']:checked").val();
+
+            if (!(scdf || police || gas)){
+                $('#scdf').focus();
+                return false;
+            }
+
+            $('#editModalValid').modal('toggle');
+
+            var agenciesSelected = ''
+            if (scdf){
+                agenciesSelected = agenciesSelected + '     SCDF';
+            }
+            if (police){
+                agenciesSelected = agenciesSelected + '     Police';
+            }
+            if (gas){
+                agenciesSelected = agenciesSelected + '     Gas';
+            }
+
+            $(".modal-body #edit-modal-title").text("Severity: " + severity);
+            $(".modal-body #edit-modal-description").text("Agencies To Notify: " + agenciesSelected);
+            return false;
+        }
+        function confirmInvalidationResponse() {
+
+
+            $('#editModalInValid').modal('toggle');
+
+            return false;
+        }
         function submitValidationRes() {
 
             $('#input-form').hide();
@@ -180,13 +216,49 @@
                         </label>
                     </div>
                 </div>
-                <button class="btn btn-primary btn-lg" onclick="return submitValidationRes();" type="submit">
+                <button class="btn btn-primary btn-lg" onclick="return confirmValidationRes();" type="submit">
                     Validate Incident Report
                 </button>
-                <button class="btn btn-secondary btn-lg" onclick="return submitInvalidationResponse();" type="submit">
+                <button class="btn btn-secondary btn-lg" onclick="return confirmInvalidationResponse();" type="submit">
                     Mark as Invalid
                 </button>
             </div>
         </form>
+    </div>
+    <div class="modal fade" id="editModalValid" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <p class="modal-title" id="saveModalLabel">Is the information correct?</p>
+                </div>
+
+                <div class="modal-body">
+                    <h4 id="edit-modal-title"></h4>
+                    <p id="edit-modal-description"></p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="submitValidationRes();">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editModalInValid" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <p class="modal-title" id="saveModalLabel">Are you sure you would like to mark this report as invalid?</p>
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="submitInvalidationResponse();">Yes</button>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock content %}
