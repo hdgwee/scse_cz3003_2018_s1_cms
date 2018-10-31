@@ -4,6 +4,8 @@ import shutil
 import time
 import xml.etree.ElementTree
 import zipfile
+from django.http import HttpResponse, Http404
+import json
 
 import requests
 from django.http import JsonResponse
@@ -59,14 +61,16 @@ def get_dengue_info(request):
     if request.method == 'GET':
         dengues = Dengue.objects.order_by('-date_time').all()
 
-        response_string = "["
-
+        response = []
+        
         for dengue in dengues:
-            response_string = response_string +\
-                             "{'date_time':" + str(dengue.date_time.timestamp())[:-2] + ",'lat': " + str(dengue.lat) +\
-                             ",'lng': " + str(dengue.lng) + "},"
+            dengue_incident = {}
+            dengue_incident["date_time"] = str(dengue.date_time.timestamp())[:-2]
+            dengue_incident["lat"] = str(dengue.lat)
+            dengue_incident["lng"] = str(dengue.lng)
+            response.append(dengue_incident)
+            
 
-        response_string = response_string + "]"
-        return JsonResponse(response_string, safe=False)
+        return HttpResponse(json.dumps(response), content_type='application/json')
 
-    return JsonResponse('')
+    return HttpResponse(json.dumps(''), content_type='application/json')
