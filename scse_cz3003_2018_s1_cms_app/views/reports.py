@@ -66,7 +66,6 @@ def get_allincidentreport(request):
         ir['latitude'] = str(ir['latitude'])
         ir['crisis_level_id'] = CrisisLevel.objects.get(id=ir['crisis_level_id']).name
         ir['source_id'] = Source.objects.get(id=ir['source_id']).name
-    print("getting all incidents",list(all_incident_reports))
     return HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
 
 def validate_incidentreport(request):
