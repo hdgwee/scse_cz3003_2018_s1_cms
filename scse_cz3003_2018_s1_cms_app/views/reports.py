@@ -6,13 +6,11 @@ from django.views.decorators.csrf import csrf_exempt
 
 import requests
 from django.shortcuts import render
-from django.http import HttpResponse, Http404
 from scse_cz3003_2018_s1_cms_app.models import CrisisLevel, IncidentReport, Source, StatusReport
 from decimal import Decimal
 import json
 import datetime
 from pytz import timezone
-import json
 
 
 #start of incident report
@@ -68,7 +66,9 @@ def get_allincidentreport(request):
         ir['latitude'] = str(ir['latitude'])
         ir['crisis_level_id'] = CrisisLevel.objects.get(id=ir['crisis_level_id']).name
         ir['source_id'] = Source.objects.get(id=ir['source_id']).name
-    print("getting all incidents",list(all_incident_reports))
+
+    # response = HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
+    # print("getting all incidents",list(all_incident_reports))
     return HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
 
 def validate_incidentreport(request):
