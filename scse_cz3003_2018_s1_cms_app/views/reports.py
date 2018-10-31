@@ -66,6 +66,7 @@ def get_allincidentreport(request):
         ir['source_id'] = Source.objects.get(id=ir['source_id']).name
 
     # response = HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
+    # print("getting all incidents",list(all_incident_reports))
     return HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
 
 def validate_incidentreport(request):
@@ -203,4 +204,3 @@ def add_incidentreport(request):
 
             ir.save()
             return HttpResponse('successful')
-
