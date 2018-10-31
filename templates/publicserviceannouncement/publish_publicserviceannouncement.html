@@ -210,10 +210,15 @@
             }
             else if (response.error) {
                 alert('Error occured'+ response.error.message );
-            } else {
-                alert('Post ID: ' + response.id);
+            }
+            else {
+               alert("Successfully published to Facebook.");
             }
         });
+
+        var url = "https://twitter.com/intent/tweet";
+        var msg = new_post;
+        window.open(url+"?text=" + msg,"", "width=500,height=300");
 
     }
     </script>
