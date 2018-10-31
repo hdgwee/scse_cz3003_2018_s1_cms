@@ -65,6 +65,8 @@ urlpatterns = [
 
     path('psamessagefrompmo', notification.psamessagefrompmo, name='psamessagefrompmo'),
 
+    path('deletenotification', notification.deletenotification, name="deletenotification"),
+
     #=====Crawled Data=====#
     path('get_psi', psi.get_psi, name='get_psi'),
 

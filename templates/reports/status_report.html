@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <table border="1" cellpadding="0" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Report ID</th>
+                <th>Crisis Level</th>
+                <th>Description</th>
+                <th>Date and Time</th>
+                <th>Postal Code</th>
+                <th>Unit Number</th>
+                <th>Street</th>
+                <th>Name of Reporter</th>
+                <th>Validation Status</th>
+            </tr>
+        </thead>
+        <tbody>
+           {% for ir in incident_report %}
+            <tr>
+                <td>{{ ir.id }}</td>
+                <td>{{ ir.crisis_level_id }}</td>
+                <td>{{ ir.description }}</td>
+                <td>{{ ir.date_time }}</td>
+                <td>{{ ir.postal_code }}</td>
+                <td>{{ ir.unit_number }}</td>
+                <td>{{ ir.street }}</td>
+                <td>{{ ir.source_id }}</td>
+                <td>{{ ir.validated }}</td>
+            </tr>
+           {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

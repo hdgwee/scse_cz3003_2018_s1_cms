@@ -86,6 +86,14 @@
             //=============Code For Notification==============
 
             window.onload=function(){
+
+                var displayPSANotification = false;
+                var str = window.location.pathname;
+
+                if(str != "/notification_read"){
+                    displayPSANotification = true;
+                }
+
                 var dnperm = document.getElementById('dnperm');
 
                 dnperm.addEventListener('click',function(e){
@@ -114,25 +122,38 @@
                 firebase.initializeApp(config);
 
                 var database = firebase.database().ref().child("notification");
+                /*
+                database.push().set({
+                    title: "hi",
+                    message: "teteasdsdasda",
+                    facebook: "1",
+                    twitter: "1",
+                    sms: "1"
+                });
+                */
 
 
                 database.on('child_added', function(data) {
+
+
                     if(Notification.permission!=='default'){
                                 var notify;
 
-                                    notify= new Notification(' Title: '+data.val().title,{
-                                        'body': data.val().message,
-                                        'icon': 'templates/image/images.jpeg',
-                                        'requireInteraction': true,
-                                        'tag': data.getKey()
-                                    });
-                                    notify.onclick = function(){
-                                        event.preventDefault(); // prevent the browser from focusing the Notification's tab
-                                        //location.href = "/notification_read";
-
-                                        window.location = '/notification_read?tag=' + data.getKey();
-                                        //window.location = '/notification_read';
-                                    }
+                                 if(displayPSANotification) {
+                                     notify = new Notification(' Title: ' + data.val().title, {
+                                         'body': data.val().message,
+                                         'icon': 'templates/image/images.jpeg',
+                                         'requireInteraction': true,
+                                         'tag': data.getKey()
+                                     });
+                                     notify.onclick = function () {
+                                         event.preventDefault(); // prevent the browser from focusing the Notification's tab
+                                         //location.href = "/notification_read";
+                                         window.open('/notification_read?tag=' + data.getKey(), '_blank');
+                                         //window.location = '/notification_read?tag=' + data.getKey();
+                                         //window.location = '/notification_read';
+                                     }
+                                 }
                     }else{
                         alert('Please allow the notification first');
                     }

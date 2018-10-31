@@ -11,6 +11,10 @@ from decimal import Decimal
 import json
 import datetime
 from pytz import timezone
+import json
+from django.core.mail import send_mail
+from django.conf import settings
+from django.template import loader
 
 
 #start of incident report
@@ -29,7 +33,6 @@ def create_incidentreport(request):
 
 def generate_statusreport(request):
     all_incident_reports = IncidentReport.objects.values()
-
     for ir in all_incident_reports:
         dt = ir['date_time']
         # Pass a date to the ir so that it can be hidden
@@ -149,9 +152,32 @@ def submit_statusreports(request):
             sr = StatusReport()
             sr.date_time = datetime.datetime.now()
             sr.save()
+
+            variable = []
+
+
             for reportID in reportIDs:
                 in_rpt = IncidentReport.objects.get(id=reportID)
+
                 sr.incident_report.add(in_rpt)
+                variable.append(in_rpt)
+
+
+            html_message = loader.render_to_string(
+                'reports/status_report.html',
+                {
+                    'incident_report': variable
+                }
+            )
+            print(html_message)
+            now = datetime.datetime.now()
+            subject = 'Status Report(Generated @' + now.strftime("%Y-%m-%d %H:%M") + ')'
+            message = ''
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = ['stormaggedon94@gmail.com']
+            send_mail(subject, message, email_from, recipient_list, fail_silently=True, html_message=html_message)
+
+
             return HttpResponse('successful')
 
 

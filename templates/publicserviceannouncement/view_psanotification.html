@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_name }}{% endblock title %}
+{% block page_stylesheets %}
+{% endblock page_stylesheets %}
+
+{% block page_javascripts %}
+<script>
+     $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            const csrfToken = getCookie('csrftoken');
+            xhr.setRequestHeader("X-CSRFToken", csrfToken);
+            console.log("CSRF Token set: " + csrfToken);
+        }
+    });
+
+     function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+            vars[key] = value;
+        });
+        return vars;
+    }
+
+
+
+     $(document).ready(function() {
+         $('#btnDone').click( function () {
+             $('#pageContent').hide();
+
+              var data = {
+                  'key': getUrlVars()["tag"]
+              }
+
+             $.ajax({
+                        url: '/deletenotification',
+                        type: 'post',
+                        data: data,
+                        success: function (msg) {
+                            if (msg === "successful") {
+                                $('#alert-success').show();
+                            }
+                            else {
+                                $('#alert-danger').show();
+                                $('#pageContent').show();
+                            }
+                        },
+                        error: function (msg, status, jqxhr) {
+                            $('#alert-danger').show();
+                            $('#pageContent').show();
+                        }
+                    });
+        });
+     });
+
+
+</script>
+
+{% endblock page_javascripts %}
+
+
+<!-- Add the page hierarchy here -->
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active">{{ page_name }}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div id="alert-success" class="row" style="display: none">
+        <div class="col-md-12">
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Success!</strong> Status reports have been successfully submitted!
+            </div>
+        </div>
+    </div>
+
+    <div id="alert-danger" class="row" style="display: none">
+        <div class="col-md-12">
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Unsuccessful!</strong> Please try again!
+            </div>
+        </div>
+    </div>
+
+    <div id="pageContent">
+        <div class="row">
+            <div class="col-md-12">
+                <h3>{{ page_name }}</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class = "col-md-3">
+               <h4>Message Title:</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+               <h4><small>{{ message_title }}</small></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Message</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+               <h4><small>{{ message }}</small></h4>
+            </div>
+        </div>
+         <div class="row">
+            <div class="col-md-12">
+                <h4>Share to:</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                          <th scope="row">Twitter</th>
+                          <td>{{ twitter }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Facebook</th>
+                          <td>{{ facebook }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">SMS</th>
+                          <td>{{ sms }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <button id="btnDone" class="btn btn-success btn-md"  type="submit" >
+                Mark as Done
+        </button>
+    </div>
+
+
+
+
+{% endblock content %}
