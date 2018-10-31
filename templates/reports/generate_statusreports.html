@@ -23,7 +23,12 @@
                 console.log("CSRF Token set: " + csrfToken);
             }
         });
+         function confirmSubmission() {
 
+            $('#editModal').modal('toggle');
+
+            return false;
+        }
         $.fn.dataTable.ext.search.push(
             function( settings, data, dataIndex ) {
                 var min = getDate( $('#min').val());
@@ -64,7 +69,8 @@
 
             } );
 
-            $('#generate_btn').click( function () {
+            $('#cfmSend').click( function () {
+                $('#editModal').modal('toggle');
                 $('#table-data').hide();
                 $('#alert-success').hide();
                 $('#alert-danger').hide();
@@ -82,7 +88,7 @@
                     }
                     var data = {
                         'id': reportIDs
-                    }
+                    };
                     console.log(data);
                     $.ajax({
                         url: '/reports/submit_statusreports/',
@@ -226,9 +232,23 @@
             <!-- /.panel -->
         </div>
         <!-- /.col-lg-12 -->
-        <button id="generate_btn" class="btn btn-primary btn-lg"  type="submit" >
+        <button id="generate_btn" class="btn btn-primary btn-lg"  type="submit" onclick="return confirmSubmission();">
             Generate Reports
         </button>
     </div>
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <p class="modal-title" id="saveModalLabel">Are you sure you would like to generate the selected reports?</p>
+                </div>
 
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="button" id = 'cfmSend' class="btn btn-success" data-dismiss="modal" >Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock content %}

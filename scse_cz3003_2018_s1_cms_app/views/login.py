@@ -3,9 +3,10 @@ import requests
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 
-
 def verifyRole(view):
     def executeView(*args, **kwargs):
+        print(kwargs)
+        print(args)
         result = view(*args, **kwargs)
         request = args[0]
         if 'role' in kwargs.keys():

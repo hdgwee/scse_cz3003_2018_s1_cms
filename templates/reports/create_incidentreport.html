@@ -13,6 +13,28 @@
                 console.log("CSRF Token set: " + csrfToken);
             }
         });
+        function confirmSubmission() {
+            var incidentReporterName = document.getElementById('name').value;
+            if(incidentReporterName.length === 0) {
+                document.getElementById('name').focus();
+                return false;
+            }
+
+            var irDescription = document.getElementById('description').value;
+
+            if(irDescription.length === 0) {
+                $('#description').focus();
+                return false;
+            }
+
+            $('#editModal').modal('toggle');
+            var publicserviceannouncementTitle = document.getElementById('name').value;
+            var publicserviceannouncementDescription = document.getElementById('description').value;
+
+            $(".modal-body #edit-modal-title").text("Reporter Name: " + publicserviceannouncementTitle);
+            $(".modal-body #edit-modal-description").text("Description: " + publicserviceannouncementDescription);
+            return false;
+        }
 
         function submitForm() {
 
@@ -23,7 +45,7 @@
 
             //figure out how to retrieve source
             var e = document.getElementById("crisis_drop_down");
-
+            var f = document.getElementById(("source_drop_down"));
 
             if(    document.getElementById('name').value.length === 0
             || document.getElementById('description').value.length === 0
@@ -36,7 +58,7 @@
             || document.getElementById('longitude').value.length === 0
             || document.getElementById('latitude').value.length === 0
             || e.options[e.selectedIndex].value === 'none selected'
-            || document.getElementById('source').value.length === 0)
+            || f.options[f.selectedIndex].value === 'none selected')
             {
                 $('#alert-missing-required-input').show();
                 $('#input-form').show();
@@ -54,7 +76,7 @@
                     'longitude': document.getElementById('longitude').value,
                     'latitude': document.getElementById('latitude').value,
                     'crisis_level': e.options[e.selectedIndex].value ,
-                    'source': document.getElementById('source').value,
+                    'source': f.options[f.selectedIndex].value
 
                 };
 
@@ -188,13 +210,38 @@
 
                 <div class="form-group">
                     <label for="source">Source Name</label>
-                    <input id="source"  class="form-control" required>
+                    <select id="source_drop_down" class="form-control" id="sel2">
+                        <option value="none selected">Select an option</option>
+                        {% for src in source %}
+                             <option value="{{ src.name }}">{{ src.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
 
-                <button class="btn btn-primary btn-block" onclick="return submitForm();" type="submit">
+                <button class="btn btn-primary btn-block" onclick="return confirmSubmission();" type="submit">
                     Create Incident Report
                 </button>
             </div>
         </form>
+    </div>
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <p class="modal-title" id="saveModalLabel">Is the information correct?</p>
+                </div>
+
+                <div class="modal-body">
+                    <h4 id="edit-modal-title"></h4>
+                    <p id="edit-modal-description"></p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="submitForm();">Yes</button>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock content %}
