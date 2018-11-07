@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'scse_cz3003_2018_s1_cms_app.apps.ScseCz30032018S1CmsAppConfig',
-    'corsheaders'
+    'corsheaders',
+    'django_twilio'
     # 'reports.apps.ScseCz30032018S1CmsReportAppConfig'
 ]
 
@@ -134,3 +135,6 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'cmsoperator2018@gmail.com'
 EMAIL_HOST_PASSWORD = 'Passw0rd123@'
+
+TWILIO_ACCOUNT_SID = 'AC06a607a5c0f6619d63611ed14f6a9058'
+TWILIO_AUTH_TOKEN = '7df47577a15cadc71ceddf17bd96f213'

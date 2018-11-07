@@ -67,6 +67,12 @@ urlpatterns = [
 
     path('deletenotification', notification.deletenotification, name="deletenotification"),
 
+    # =====Scheduler=====#
+    path('reports/send_email', reports.send_email, name='send_email'),
+
+    # =====SMS=====#
+    path('announcements/sms', announcements.sms, name="sns"),
+
     #=====Crawled Data=====#
     path('get_psi', psi.get_psi, name='get_psi'),
 

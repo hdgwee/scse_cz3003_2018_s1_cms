@@ -10,17 +10,19 @@ from scse_cz3003_2018_s1_cms_app.models import CrisisLevel, IncidentReport, Sour
 from decimal import Decimal
 import json
 import datetime
-from pytz import timezone
+from django.utils import timezone
 import json
 from django.core.mail import send_mail
 from django.conf import settings
 from django.template import loader
+from firebase import firebase
+from datetime import date, timedelta
 
 
 #start of incident report
 
 # TODO: , link up with emergency response,
-
+temp = firebase.FirebaseApplication('https://testapp-ab172.firebaseio.com/', None)
 
 def create_incidentreport(request):
 
@@ -146,6 +148,32 @@ def submit_validationresponse(request):
             validated_report.save()
             return HttpResponse('successful')
 
+def send_email(request):
+    startdate = date.today()
+    #enddate = startdate + timedelta(days=6)
+    IR = IncidentReport.objects.filter(date_time__year=1923)
+    variable = []
+    for each in IR:
+        print(each.id)
+        print(each.name)
+        variable.append(each)
+
+    html_message = loader.render_to_string(
+        'reports/status_report.html',
+        {
+            'incident_report': variable
+        }
+    )
+
+    print(html_message)
+    now = datetime.datetime.now()
+    subject = 'Status Report(Generated @' + now.strftime("%Y-%m-%d %H:%M") + ')'
+    message = ''
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = ['stormaggedon94@gmail.com']
+    send_mail(subject, message, email_from, recipient_list, fail_silently=True, html_message=html_message)
+
+    return HttpResponse('successful')
 
 def submit_statusreports(request):
     if request.method == 'POST':
@@ -234,4 +262,12 @@ def add_incidentreport(request):
             ir.source = src
 
             ir.save()
+
+            #Adding Notification
+            result = temp.post('/notificationIR',
+                               data={
+                                   "title": 'URGENT!!!',
+                                   "message": 'You have an outstanding Incident Report',
+                                },
+                               params={'print': 'pretty'});
             return HttpResponse('successful')

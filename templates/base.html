@@ -88,10 +88,14 @@
             window.onload=function(){
 
                 var displayPSANotification = false;
+                var displayIRNotification = false;
                 var str = window.location.pathname;
 
                 if(str != "/notification_read"){
                     displayPSANotification = true;
+                }
+                if(str != "/reports/validate/"){
+                    displayIRNotification = true;
                 }
 
                 var dnperm = document.getElementById('dnperm');
@@ -149,8 +153,36 @@
                                      notify.onclick = function () {
                                          event.preventDefault(); // prevent the browser from focusing the Notification's tab
                                          //location.href = "/notification_read";
-                                         window.open('/notification_read?tag=' + data.getKey(), '_blank');
+                                         window.open('/notification_read?tag='+ data.getKey());
                                          //window.location = '/notification_read?tag=' + data.getKey();
+                                         //window.location = '/notification_read';
+                                     }
+                                 }
+                    }else{
+                        alert('Please allow the notification first');
+                    }
+                });
+
+                var database1 = firebase.database().ref().child("notificationIR");
+                database1.on('child_added', function(data) {
+
+
+                    if(Notification.permission!=='default'){
+                                var notify;
+
+                                 if(displayIRNotification) {
+                                     notify = new Notification(' Title: ' + data.val().title, {
+                                         'body': data.val().message,
+                                         'icon': 'templates/image/images.jpeg',
+                                         'requireInteraction': true,
+                                         'tag': data.getKey()
+                                     });
+                                     notify.onclick = function () {
+                                         event.preventDefault(); // prevent the browser from focusing the Notification's tab
+                                         //location.href = "/notification_read";
+                                         //window.open('/reports/validate');
+                                         window.location = '/reports/validate';
+                                         data.ref.remove();
                                          //window.location = '/notification_read';
                                      }
                                  }

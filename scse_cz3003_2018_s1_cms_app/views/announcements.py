@@ -2,6 +2,9 @@ from django.core import serializers
 from django.db.models import Q
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
+from twilio.rest import Client
+from django.conf import settings
+
 
 from scse_cz3003_2018_s1_cms_app.connector.psi import get_psi_from_source
 from scse_cz3003_2018_s1_cms_app.connector.dengue import get_dengue_info_from_source
@@ -79,6 +82,18 @@ def update_publicserviceannouncement(request):
             psa.save()
             return HttpResponse('successful')
 
+def sms(request):
+    msg = request.POST.get('msg')
+    print(msg)
+    message = msg
+    from_ = '+14404827993'
+    to = '+6590028959'
+    client = Client(
+        settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+    response = client.messages.create(
+        body=message, to=to, from_=from_)
+
+    return HttpResponse('successful')
 
 def delete_publicserviceannouncement(request):
     if request.method == 'POST':

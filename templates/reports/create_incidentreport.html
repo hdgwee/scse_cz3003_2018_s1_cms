@@ -5,6 +5,7 @@
 {% endblock page_stylesheets %}
 
 {% block page_javascripts %}
+
     <script>
         $.ajaxSetup({
             beforeSend: function(xhr, settings) {
@@ -13,6 +14,7 @@
                 console.log("CSRF Token set: " + csrfToken);
             }
         });
+
         function confirmSubmission() {
             var incidentReporterName = document.getElementById('name').value;
             if(incidentReporterName.length === 0) {
