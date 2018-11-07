@@ -6,14 +6,14 @@ import json
 s = sched.scheduler(time.time, time.sleep)
 sendPSIAlert = False
 def send_email(a='default'):
-  #contents = urllib.request.urlopen("http://localhost:8000/reports/send_email").read()
-  #print(contents)
+  contents = urllib.request.urlopen("http://localhost:5003/reports/send_email").read()
+  print(contents)
   print("Boo")
   s.enter(10, 1, send_email)
 
 
 def checkPSI():
-    contents = urllib.request.urlopen("http://localhost:8000/get_psi?psi_type=psi_twenty_four_hourly").read()
+    contents = urllib.request.urlopen("http://localhost:5003/get_psi?psi_type=psi_twenty_four_hourly").read()
     data = json.loads(contents)
     northAlert = 0
     southAlert = 0
