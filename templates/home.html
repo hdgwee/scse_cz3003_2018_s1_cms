@@ -3,94 +3,108 @@
 {% block page_stylesheets %}
     {# Custom css, if any. #}
     <link href="/static/sb_admin_2/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+
 {% endblock page_stylesheets %}
 
 {% block page_javascripts %}
     {# Custom JavaScript, if any. #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
+
 {% endblock page_javascripts %}
 
 <!-- Add the page hierarchy here -->
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item active">{{ page_name }}</li>
+    <!--<li class="breadcrumb-item"><a href="/">Home</a></li>-->
+    <!--<li class="breadcrumb-item active">{{ page_name }}</li>-->
 {% endblock breadcrumb %}
 
 {% block content %}
     <div>
         <div class="row">
             <div class="col-md-12">
-                <h3>{{ page_name }}</h3>
+                <h3 class="display-4">{{ page_name }}</h3>
             </div>
         </div>
 
         <div class="row" style="padding-top: 16px">
             <div class="col-lg-4 col-md-6">
-                <div class="panel panel-red">
-                    <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <i class="fa fa-support fa-5x"></i>
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <div class="huge">13</div>
-                                <div>Outstanding Incident Reports</div>
-                            </div>
-                        </div>
+                <div class="card text-white bg-danger o-hidden h-100">
+                    <div class="card-body">
+                      <div class="card-body-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                      </div>
+                      <div class="mr-5">15 Outstanding Incident Reports</div>
                     </div>
-                    <a href="#">
-                        <div class="panel-footer">
-                            <span class="pull-left">View Details</span>
-                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                            <div class="clearfix"></div>
-                        </div>
-                    </a>
+                    <div class="card-footer text-white clearfix small z-1" href="#">
+
+                    </div>
                 </div>
             </div>
 
             <div class="col-lg-4 col-md-6">
-                <div class="panel panel-yellow">
-                    <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <i class="fa fa-warning fa-5x"></i>
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <div class="huge">13</div>
-                                <div>In Progress Incident Reports</div>
-                            </div>
-                        </div>
+                <div class="card text-white bg-warning o-hidden h-100">
+                    <div class="card-body">
+                      <div class="card-body-icon">
+                        <i class="fas fa-spinner"></i>
+                      </div>
+                      <div class="mr-5">3 In Progress Incident Reports</div>
                     </div>
-                    <a href="#">
-                        <div class="panel-footer">
-                            <span class="pull-left">View Details</span>
-                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                            <div class="clearfix"></div>
-                        </div>
-                    </a>
+                    <div class="card-footer text-white clearfix small z-1" href="#">
+
+                    </div>
                 </div>
             </div>
 
             <div class="col-lg-4 col-md-6">
-                <div class="panel panel-green">
-                    <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <i class="fa fa-check fa-5x"></i>
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <div class="huge">13</div>
-                                <div>Completed Incident Reports</div>
-                            </div>
+                <div class="card text-white bg-success o-hidden h-100">
+                    <div class="card-body">
+                        <div class="card-body-icon">
+                            <i class="fas fa-check"></i>
                         </div>
+                        <div class="mr-5">15 Completed Incident Reports</div>
+
                     </div>
-                    <a href="#">
-                        <div class="panel-footer">
-                            <span class="pull-left">View Details</span>
-                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                            <div class="clearfix"></div>
-                        </div>
-                    </a>
+                    <div class="card-footer text-white clearfix small z-1" href="#">
+
+                    </div>
                 </div>
+            </div>
+        </div>
+
+        <div style="padding-top: 16px">
+        <!-- Area Chart Example-->
+            <div class="card mb-3">
+                <div class="card-header">
+                  <i class="fas fa-chart-area"></i>
+                  Severity of Incidents in 2018
+                </div>
+                <div class="card-body">
+                    <canvas id="myAreaChart" width="100%" height="30"></canvas>
+                    <script>
+                        var ctx = document.getElementById("myAreaChart");
+                        var myChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: ['Jan 18', 'Feb 18', 'Mar 18', 'April 18', 'May 18', 'June 18', 'June 18', 'July 18', 'August 18', 'Sept 18', 'Oct 18', 'Nov 18'],
+                                datasets: [{
+                                    label: 'High',
+                                    data: [12, 19, 3, 17, 6, 3, 7, 5, 11, 3, 5, 1],
+                                    backgroundColor: "rgba(153,255,51,0.4)"
+                                }, {
+                                    label: 'Low',
+                                    data: [2, 29, 5, 5, 2, 3, 10, 19, 20, 30, 20, 15],
+                                    backgroundColor: "rgba(255,153,0,0.4)"
+                                }, {
+                                    label: 'Medium',
+                                    data: [1, 35, 30, 21, 5, 3, 5, 4, 15, 16, 20, 10],
+                                    backgroundColor: "rgba(41, 170, 233,0.4)"
+                                }]
+                            }
+                        });
+                    </script>
+                </div>
+                <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
             </div>
         </div>
     </div>

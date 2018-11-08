@@ -2,7 +2,8 @@
 {% block title %}{{ page_name }}{% endblock title %}
 {% block page_stylesheets %}
     {# Custom css, if any. #}
-    <link href="/static/sb_admin_2/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+    <!--<link href="/static/sb_admin_2/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">-->
+    <link href="/static/sb_admin_4/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 {% endblock page_stylesheets %}
 
 {% block page_javascripts %}
@@ -119,7 +120,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h3>{{ page_name }}</h3>
+            <h3 class="display-4">{{ page_name }}</h3>
         </div>
     </div>
 
@@ -131,7 +132,7 @@
         <div class="visible-xs visible-sm" style="padding-top: 16px;"></div>
 
         <div class="col-md-2">
-            <button class="btn btn-default btn-block" onclick="location.href='/new_publicserviceannouncement'">
+            <button class="btn btn-primary btn-block" onclick="location.href='/new_publicserviceannouncement'">
                 New PSA
             </button>
         </div>
@@ -157,15 +158,19 @@
 
     <div class="row" style="padding-top: 16px;">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-body">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fas fa-table"></i>
+                    List of PSA
+                </div>
+                <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
                             <tr>
                                 <th style="width: 20%">Title</th>
-                                <th style="width: 70%">Description</th>
-                                <th style="width: 10%">Action</th>
+                                <th style="width: 60%">Description</th>
+                                <th style="width: 20%">Action</th>
                             </tr>
                             </thead>
                             <tbody id="psa-list">
@@ -173,7 +178,8 @@
                                 <tr>
                                     <td>{{ psa.title }}</td>
                                     <td>{{ psa.description }}</td>
-                                    <td><a href="/edit_publicserviceannouncement/{{ psa.id }}">Edit</a> | <a data-id="{{ psa.id }}" data-title="{{ psa.title }}" data-description="{{ psa.description }}" class="open-delete-psa-dialog" data-toggle="modal" data-target="#deleteModal">Delete</a></td>
+                                    <td><a href="/edit_publicserviceannouncement/{{ psa.id }}">Edit</a> |
+                                        <a href="" data-id="{{ psa.id }}" data-title="{{ psa.title }}" data-description="{{ psa.description }}" class="open-delete-psa-dialog" data-toggle="modal" data-target="#deleteModal">Delete</a></td>
                                 </tr>
                             {% endfor %}
                             </tbody>

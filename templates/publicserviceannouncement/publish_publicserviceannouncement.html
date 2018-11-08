@@ -9,6 +9,10 @@
     <script>
         window.onload = function() {
             document.getElementById('search').value = '';
+
+            $(".psa").change(function() {
+                $(".psa").not(this).prop('checked', false);
+            });
         };
 
         var publicserviceannouncementIdToBeRemoved = undefined;
@@ -119,14 +123,12 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h3>{{ page_name }}</h3>
+             <h3 class="display-4">{{ page_name }}</h3>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-10">
-            <input id="search" type="text" class="form-control" placeholder="Filter by..." oninput="searchPsa();">
-        </div>
+
 
         <div class="visible-xs visible-sm" style="padding-top: 16px;"></div>
         <!--
@@ -142,7 +144,7 @@
         <div class="col-md-12">
             <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <strong>Success!</strong> New Public Service Announcement has been successfully added!
+                <strong>Success!</strong> PSA has been sent
             </div>
         </div>
     </div>
@@ -155,18 +157,27 @@
             </div>
         </div>
     </div>
+    <div id="content">
+    <div class="col-md-10">
+            <input id="search" type="text" class="form-control" placeholder="Filter by..." oninput="searchPsa();">
+    </div>
+
 
     <div class="row" style="padding-top: 16px;">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-body">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fas fa-table"></i>
+                    List of PSA
+                </div>
+                <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
                             <tr>
                                 <th style="width: 20%">Title</th>
                                 <th style="width: 70%">Description</th>
-                                <th style="width: 10%">Selected</th>
+                                <th style="width: 10%">Select</th>
                             </tr>
                             </thead>
                             <tbody id="psa-list">
@@ -189,7 +200,7 @@
         <input type="checkbox" id="selectTt" value="Twitter">Twitter<br>
         <input type="checkbox" id="selectSMS" value="SMS">SMS<br>
         <br>
-        <button class="btn btn-success" onclick='postToFeed(); return false;'>Publish</button>
+        <button class="btn btn-success mb-5" onclick='postToFeed(); return false;'>Publish</button>
 
     </div>
 
@@ -229,7 +240,8 @@
                         alert('Error occured'+ response.error.message );
                     }
                     else {
-                        alert("Successfully published to Facebook.");
+                         $('#alert-success').show();
+                         $('#content').hide();
                     }
                 });
             }
@@ -250,7 +262,8 @@
                         data: data,
                         success: function (msg) {
                             if (msg === "successful") {
-                                alert("Success");
+                                 $('#alert-success').show();
+                                 $('#content').hide();
                             }
                             else {
 
@@ -264,7 +277,7 @@
         }
     }
     </script>
-
+    </div>
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

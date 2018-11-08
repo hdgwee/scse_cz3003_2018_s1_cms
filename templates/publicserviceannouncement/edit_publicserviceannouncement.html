@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block title %}{{ page_name }}{% endblock title %}
 {% block page_stylesheets %}
-    <link href="/static/sb_admin_2/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+    <!--<link href="/static/sb_admin_2/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">-->
+    <link href="/static/sb_admin_4/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 {% endblock page_stylesheets %}
 
 {% block page_javascripts %}
@@ -90,14 +91,13 @@
 {% block content %}
     <div class="row">
         <div class="col-md-12">
-            <h3>{{ page_name }}</h3>
+             <h3 class="display-4">{{ page_name }}</h3>
         </div>
     </div>
 
     <div id="alert-success" class="row" style="display: none">
         <div class="col-md-12">
             <div class="alert alert-success alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <strong>Success!</strong> New Public Service Announcement has been successfully updated!
             </div>
         </div>
@@ -123,7 +123,7 @@
 
     <form id="input-form" action="" method="post"> {% csrf_token %}
         <div class="row" style="padding-top: 16px">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="form-group">
                     <label for="title">Title</label>
                     <input id="title" class="form-control" value="{{ psa.title }}">
@@ -140,14 +140,14 @@
         </div>
 
         <div class="row">
-            <div class="col-md-offset-6 col-md-3" style="padding-top: 16px">
+            <div class="col-md-offset-6 col-md-auto" style="padding-top: 16px">
                 <button class="btn btn-danger btn-block" onclick="window.history.go(-1); return false;">
                     Discard
                 </button>
             </div>
 
-            <div class="col-md-3" style="padding-top: 16px">
-                <button class="btn btn-primary btn-block open-edit-psa-dialog" onclick="return confirmSubmission();">
+            <div class="col-md-auto" style="padding-top: 16px">
+                <button class="btn btn-success btn-block open-edit-psa-dialog" onclick="return confirmSubmission();">
                     Update Public Service Announcement
                 </button>
             </div>
@@ -158,8 +158,8 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                    <h6 class="modal-title" id="saveModalLabel">Is the information correct?</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <p class="modal-title" id="saveModalLabel">Is the information correct?</p>
                 </div>
 
                 <div class="modal-body">

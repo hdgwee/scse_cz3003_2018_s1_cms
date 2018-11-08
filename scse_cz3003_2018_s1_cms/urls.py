@@ -8,7 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     ###################################################################################################################
     # Views
-    path('', login.home, name='home'),
+    path('home', login.home, name='home'),
 
     path('view_publicserviceannouncement', announcements.view_publicserviceannouncement
          , name='view_publicserviceannouncement'),

@@ -2,6 +2,7 @@
 {% block title %}{{ page_name }}{% endblock title %}
 {% block page_stylesheets %}
     <link href="/static/sb_admin_2/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 {% endblock page_stylesheets %}
 
 {% block page_javascripts %}
@@ -115,8 +116,8 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-md-12">
-            <h3>{{ page_name }}</h3>
+         <div class="col-md-12">
+             <h3 class="display-4">{{ page_name }}</h3>
         </div>
     </div>
 
@@ -148,81 +149,155 @@
     </div>
 
     <div id="input-form" class="row">
-        <form action="" method="post"> {% csrf_token %}
-            <div id="fields" class="col-md-12">
+        <form action="" method="post" class="col-md-8"> {% csrf_token %}
+            <div id="fields" >
+
+
                 <div class="form-group">
                     <label for="name">Name of Caller</label>
                     <input id="name" class="form-control" required>
                 </div>
 
+
                 <div class="form-group">
                     <label for="description">Description</label>
                     <textarea id="description" class="form-control" rows="3" required></textarea>
                 </div>
-
-                <div class="form-group">
-                    <label for="mobile_number">Mobile Number</label>
-                    <input id="mobile_number" type="number" class="form-control" required>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="mobile_number">Mobile Number</label>
+                            <input id="mobile_number" type="number" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col">
+                          <div class="form-group">
+                              <label for="date">Date</label>
+                              <input id="date" type="date" class="form-control" required>
+                          </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="time">Time</label>
+                            <input id="time" type="time" class="form-control" required>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="date">Date</label>
-                    <input id="date" type="date" class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="time">Time</label>
-                    <input id="time" type="time" class="form-control" required>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="unit_number">Unit Number</label>
+                            <input id="unit_number"  class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="postal_code">Postal Code</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <input id="postal_code"  class="form-control" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" id="searchPC" class="btn btn-primary">Search Address</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="street">Street</label>
-                    <input id="street"  class="form-control" required>
+                    <textarea rows="3" id="street" disabled class="form-control" required></textarea>
                 </div>
 
-                <div class="form-group">
-                    <label for="unit_number">Unit Number</label>
-                    <input id="unit_number"  class="form-control" required>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="longitude">Longitude</label>
+                            <input id="longitude" disabled  type="number"  class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="latitude">Latitude</label>
+                            <input id="latitude" disabled type="number"  class="form-control" required>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="postal_code">Postal Code</label>
-                    <input id="postal_code"  class="form-control" required>
+
+
+
+
+                <script>
+                    $("#searchPC").click(function(){
+                         var pc = $("#postal_code").val();
+                         var urlStr = 'https://developers.onemap.sg/commonapi/search?searchVal='+ pc +'&returnGeom=Y&getAddrDetails=Y&pageNum=1';
+                            $.ajax({
+                                url: urlStr,
+                                crossDomain: true,
+                                beforeSend: function(xhr){
+                                    xhr.withCredentials = true;
+                                },
+                                success: function(result) {
+                                    var address = result['results'][0];
+                                    if(address==null){
+                                        alert("No such address");
+                                    }
+                                    else{
+                                        var streetname = address['BLK_NO'] + ' ' + address['ROAD_NAME'];
+                                        $("#street").val(streetname);
+                                        var lat = address['LATITUDE'];
+                                        var long = address['LONGITUDE'];
+                                        console.log(address);
+                                        console.log(lat);
+                                        console.log(long);
+                                        $("#longitude").val(long);
+                                        $("#latitude").val(lat);
+                                    }
+                                }
+                            });
+
+
+                    });
+                </script>
+
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for="source">Source Name</label>
+                            <select id="source_drop_down" class="form-control" id="sel2">
+                                <option value="none selected">Select an option</option>
+                                {% for src in source %}
+                                     <option value="{{ src.name }}">{{ src.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for="crisis_level">Crisis Level</label>
+                            <select id="crisis_drop_down" class="form-control" id="sel1">
+                                <option value="none selected">Select an option</option>
+                                {% for crisis in crisis_level %}
+                                     <option value="{{ crisis.name }}">{{ crisis.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="longitude">Longitude</label>
-                    <input id="longitude" type="number"  class="form-control" required>
+                <div class="row mb-5">
+                    <div class="col-md-auto">
+                        <button class="btn btn-success btn-block" onclick="return confirmSubmission();" type="submit">
+                            Create Incident Report
+                        </button>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="latitude">Latitude</label>
-                    <input id="latitude" type="number"  class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="crisis_level">Crisis Level</label>
-                    <select id="crisis_drop_down" class="form-control" id="sel1">
-                        <option value="none selected">Select an option</option>
-                        {% for crisis in crisis_level %}
-                             <option value="{{ crisis.name }}">{{ crisis.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="source">Source Name</label>
-                    <select id="source_drop_down" class="form-control" id="sel2">
-                        <option value="none selected">Select an option</option>
-                        {% for src in source %}
-                             <option value="{{ src.name }}">{{ src.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <button class="btn btn-primary btn-block" onclick="return confirmSubmission();" type="submit">
-                    Create Incident Report
-                </button>
             </div>
         </form>
     </div>
@@ -230,8 +305,8 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                    <h6 class="modal-title" id="saveModalLabel">Is the information correct?</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <p class="modal-title" id="saveModalLabel">Is the information correct?</p>
                 </div>
 
                 <div class="modal-body">

@@ -14,18 +14,19 @@
         <title>{% block title %}{% endblock title %}</title>
 
         <!-- Bootstrap Core CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
               integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-              crossorigin="anonymous">
+              crossorigin="anonymous">-->
+        <link href="/static/sb_admin_4/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- MetisMenu CSS -->
-        <link href="/static/sb_admin_2/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+        <!-- <link href="/static/sb_admin_2/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">-->
 
         <!-- Custom CSS -->
-        <link href="/static/sb_admin_2/dist/css/sb-admin-2.css" rel="stylesheet">
+        <!-- <link href="/static/sb_admin_2/dist/css/sb-admin-2.css" rel="stylesheet">-->
 
         <!-- Custom Fonts -->
-        <link href="/static/sb_admin_2/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <!-- <link href="/static/sb_admin_2/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">-->
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -34,25 +35,37 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
 
-        <!-- jQuery -->
-        <script src="/static/sb_admin_2/vendor/jquery/jquery.min.js"></script>
-        <!--<script src="/static/sb_admin_2/vendor/jquery/jquery.min.js"></script>-->
-        <!--<script src="/static/sb_admin_2/js/jquery-1.12.4.js"></script>-->
 
         <!-- Firebase Notification -->
         <script src="https://www.gstatic.com/firebasejs/3.6.10/firebase.js"></script>
 
 
         <!-- Bootstrap Core JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-                crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+        <!--<script src="/static/sb_admin_4/vendor/jquery/jquery.min.js"></script>-->
+        <script src="/static/sb_admin_4/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
         <!-- Metis Menu Plugin JavaScript -->
-        <script src="/static/sb_admin_2/vendor/metisMenu/metisMenu.min.js"></script>
+        <!--<script src="/static/sb_admin_2/vendor/metisMenu/metisMenu.min.js"></script>-->
+
+        <!-- Custom fonts for this template-->
+        <link href="/static/sb_admin_4/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+        <!-- Custom styles for this template-->
+        <link href="/static/sb_admin_4/css/sb-admin.css" rel="stylesheet">
+
+        <!-- Custom scripts for all pages-->
+        <script src="/static/sb_admin_4/js/sb-admin.min.js"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="/static/sb_admin_4/vendor/jquery-easing/jquery.easing.min.js"></script>
+        <script src="/static/sb_admin_4/vendor/datatables/jquery.dataTables.js"></script>
+        <script src="/static/sb_admin_4/vendor/datatables/dataTables.bootstrap4.js"></script>
 
         <!-- Custom Theme JavaScript -->
-        <script src="/static/sb_admin_2/dist/js/sb-admin-2.js"></script>
+        <!--<script src="/static/sb_admin_2/dist/js/sb-admin-2.js"></script>-->
 
         <!------------------------------------------------------------------------------------------------------------>
         <!------------------------------------------------------------------------------------------------------------>
@@ -91,6 +104,9 @@
                 var displayIRNotification = false;
                 var str = window.location.pathname;
 
+                if(str =="/home"){
+                    $('.breadcrumb').remove();
+                }
                 if(str != "/notification_read"){
                     displayPSANotification = true;
                 }
@@ -213,41 +229,56 @@
 
 <body>
 {% block body %}
+    <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+        <a class="navbar-brand mr-1" href="home">Central Management System</a>
+
+    </nav>
+
     <div id="wrapper">
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="">Central Management System</a>
-            </div>
+        <ul class="sidebar navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/view_publicserviceannouncement">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Manage PSA</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/publish_publicserviceannouncement">
+                <i class="far fa-paper-plane"></i>
+                <span>Publish PSA</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/reports/create">
+                <i class="fas fa-plus-circle"></i>
+                <span>Create Incident Report</span></a>
+            </li>
+             <li class="nav-item">
+              <a class="nav-link" href="/reports/status">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Generate Status Report</span></a>
+            </li>
+             <li class="nav-item">
+              <a class="nav-link" href="/reports/validate">
+                <i class="fas fa-check-circle"></i>
+                <span>Validate Incident Report</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="dnperm">
+                <i class="fas fa-exclamation"></i>
+                <span>Request Permission</span></a>
+            </li>
+        </ul>
 
-            <div class="navbar-default sidebar" role="navigation">
-                <div class="sidebar-nav navbar-collapse">
-                    <ul class="nav" id="side-menu">
-                        <li>
-                            <a href="/view_publicserviceannouncement">Manage PSA</a>
-                        </li>
-                        <li>
-                            <a href="/publish_publicserviceannouncement">Publish PSA</a>
-                        </li>
-                        <li>
-                            <a href="/reports/create">Create Incident Report</a>
-                        </li>
-                        <li>
-                            <a href="/reports/status">Generate Status Report</a>
-                        </li>
-                        <li>
-                            <a href="/reports/validate">Validate Incident Report</a>
-                        </li>
-                        <li>
-                            <a href="#" id="dnperm">Request Permission</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
 
-        <div id="page-wrapper">
-            <div class="row">
+
+
+
+        <div id="content-wrapper" class="bg-light">
+            <div class="container-fluid">
                 <div style="padding-left: 16px; padding-right: 16px">
+
+
                     <ol class="breadcrumb" style="margin-top: 16px;">
                         {% block breadcrumb %}
                         {% endblock breadcrumb %}
