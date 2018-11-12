@@ -17,15 +17,17 @@ from django.conf import settings
 from django.template import loader
 from firebase import firebase
 from datetime import date, timedelta
+from scse_cz3003_2018_s1_cms_app.views.login import verifyRole
 
-
-#start of incident report
+# start of incident report
 
 # TODO: , link up with emergency response,
 temp = firebase.FirebaseApplication('https://testapp-ab172.firebaseio.com/', None)
-
+# views
 def create_incidentreport(request):
-
+    res, role = verifyRole(request, ['po'])
+    if res != 'success':
+        return res
     crisis_level = CrisisLevel.objects.all()
     source = Source.objects.all()
     return render(request, 'reports/create_incidentreport.html',
@@ -36,6 +38,9 @@ def create_incidentreport(request):
 
 
 def generate_statusreport(request):
+    res, role = verifyRole(request, ['cms'])
+    if res != 'success':
+        return res
     all_incident_reports = IncidentReport.objects.values()
     for ir in all_incident_reports:
         dt = ir['date_time']
@@ -55,28 +60,10 @@ def generate_statusreport(request):
 
     })
 
-################################# api for pmo ######################################
-@csrf_exempt
-def get_allincidentreport(request):
-    all_incident_reports = IncidentReport.objects.values()
-
-    for ir in all_incident_reports:
-        dt = ir['date_time']
-        # Pass a date to the ir so that it can be hidden
-        ir['date'] = dt.strftime("%Y-%m-%d")
-
-        ir['date_time'] = dt.strftime("%Y %B %d %I:%M%p")
-        ir['mobile_number'] = str(ir['mobile_number'])
-        ir['longitude'] = str(ir['longitude'])
-        ir['latitude'] = str(ir['latitude'])
-        ir['crisis_level_id'] = CrisisLevel.objects.get(id=ir['crisis_level_id']).name
-        ir['source_id'] = Source.objects.get(id=ir['source_id']).name
-
-    # response = HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
-    # print("getting all incidents",list(all_incident_reports))
-    return HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
-
 def validate_incidentreport(request):
+    res, role = verifyRole(request, ['cms'])
+    if res != 'success':
+        return res
     all_incident_reports = IncidentReport.objects.values()
     all_unseen_reports = all_incident_reports.filter(validated='unseen')
     if len(all_unseen_reports) == 0:
@@ -104,7 +91,26 @@ def validate_incidentreport(request):
 
 # Start of apis
 
+################################# api for pmo ######################################
+@csrf_exempt
+def get_allincidentreport(request):
+    all_incident_reports = IncidentReport.objects.values()
 
+    for ir in all_incident_reports:
+        dt = ir['date_time']
+        # Pass a date to the ir so that it can be hidden
+        ir['date'] = dt.strftime("%Y-%m-%d")
+
+        ir['date_time'] = dt.strftime("%Y %B %d %I:%M%p")
+        ir['mobile_number'] = str(ir['mobile_number'])
+        ir['longitude'] = str(ir['longitude'])
+        ir['latitude'] = str(ir['latitude'])
+        ir['crisis_level_id'] = CrisisLevel.objects.get(id=ir['crisis_level_id']).name
+        ir['source_id'] = Source.objects.get(id=ir['source_id']).name
+
+    # response = HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
+    # print("getting all incidents",list(all_incident_reports))
+    return HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
 
 
 def submit_invalidation(request):

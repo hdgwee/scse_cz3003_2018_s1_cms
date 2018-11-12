@@ -10,6 +10,8 @@ urlpatterns = [
     # Views
     path('home', login.home, name='home'),
 
+    path('', login.login, name='login_other'),
+
     path('view_publicserviceannouncement', announcements.view_publicserviceannouncement
          , name='view_publicserviceannouncement'),
 

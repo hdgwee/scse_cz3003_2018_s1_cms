@@ -49,6 +49,13 @@
                       <div class="form-group">
                         <h1>Please login</h1>
                         <br>
+                        {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
                         <form action="/authorization/" method="post">
                           <input class="form-control" type="text" placeholder="Username" name="username" >
                           <input class="form-control" type="password" placeholder="Password" name="password" >

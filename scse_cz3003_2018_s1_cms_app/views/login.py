@@ -2,29 +2,30 @@ from django.views.decorators.csrf import csrf_exempt
 import requests
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
+from django.contrib import messages
 
-def verifyRole(view):
-    def executeView(*args, **kwargs):
-        print(kwargs)
-        print(args)
-        result = view(*args, **kwargs)
-        request = args[0]
-        if 'role' in kwargs.keys():
-            role = kwargs['role']
+def verifyRole(request, role):
+    #role = 'cms' 'pmo' 'er' 'po'
+    # pmo @ singapore.com
+    # cmsoperator @ singapore.com
+    # emergencyresponse @ singapore.com
+    cookie = request.COOKIES.get('auth')
+    dictToSend = {
+        'cookie': cookie
+    }
+    authenticatedRole = requests.post('http://localhost:5002/checkCookie', json=dictToSend)
+    print('role:', authenticatedRole.text)
+    if authenticatedRole.text == 'error':
+        messages.warning(request, 'You are not authorised to visit that page. Please login again.')
+        response = redirect('login')
+        return response, authenticatedRole.text
+    else:
+        if authenticatedRole.text not in role:
+            messages.warning(request, 'You are not authorised to visit that page. Please login again.')
+            response = redirect('login')
+            return response, authenticatedRole.text
         else:
-            role = 'cms'
-        cookie = request.COOKIES.get('auth')
-        dictToSend = {
-            'cookie': cookie
-        }
-        authenticatedRole = requests.post('http://localhost:5002/checkCookie', json=dictToSend)
-        print('role:', authenticatedRole.text)
-        if role != authenticatedRole.text:
-            print('incorrect role')
-            return HttpResponse('You do not have permission to access this webpage')
-        else:
-            return result
-    return executeView
+            return 'success', authenticatedRole.text
 
 ########################################################################################################################
 # Views
@@ -35,9 +36,14 @@ def login(request):
     return render(request, 'login.html')
 
 
-@verifyRole
 def home(request):
-    return render(request, 'home.html', {'page_name': "Homepage"})
+    res, role = verifyRole(request, ['cms', 'po'])
+    if res != 'success':
+        return res
+    if role == 'po':
+        return render(request, 'reports/create_incidentreport.html', {'page_name': "Homepage"})
+    else:
+        return render(request, 'home.html', {'page_name': "Homepage"})
 
 
 ########################################################################################################################
