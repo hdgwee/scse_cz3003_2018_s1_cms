@@ -98,6 +98,15 @@
 
             //=============Code For Notification==============
 
+            function logout(){
+                delete_cookie('auth');
+                window.location.replace("/login");
+            }
+
+            var delete_cookie = function(name) {
+                document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            };
+
             window.onload=function(){
 
                 var displayPSANotification = false;
@@ -231,7 +240,14 @@
 {% block body %}
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-        <a class="navbar-brand mr-1" href="home">Central Management System</a>
+        <a class="navbar-brand" href="home">Central Management System</a>
+
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item mx-1">
+                <a class="nav-link" onclick="logout()" href="javascript:void(0);">Logout</a>
+            </li>
+        </ul>
+      </ul>
 
     </nav>
 
