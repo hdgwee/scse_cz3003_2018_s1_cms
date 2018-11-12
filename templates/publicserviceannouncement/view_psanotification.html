@@ -21,34 +21,91 @@
         return vars;
     }
 
+    function confirmSubmission() {
+            var publicserviceannouncementTitle = document.getElementById('title').value;
+            if(publicserviceannouncementTitle.length === 0) {
+                document.getElementById('title').focus();
+                return false;
+            }
 
+            var publicserviceannouncementDescription = document.getElementById('description').value;
+
+            if(publicserviceannouncementDescription.length === 0) {
+                $('#description').focus();
+                return false;
+            }
+
+            $('#newModal').modal('toggle');
+            var publicserviceannouncementTitle = document.getElementById('title').value;
+            var publicserviceannouncementDescription = document.getElementById('description').value;
+
+            $(".modal-body #new-modal-title").text("Title: " + publicserviceannouncementTitle);
+            $(".modal-body #new-modal-description").text("Description: " + publicserviceannouncementDescription);
+            return false;
+    }
 
      $(document).ready(function() {
+
+
          $('#btnDone').click( function () {
              $('#pageContent').hide();
-
               var data = {
                   'key': getUrlVars()["tag"]
               }
 
-             $.ajax({
-                        url: '/deletenotification',
-                        type: 'post',
-                        data: data,
-                        success: function (msg) {
-                            if (msg === "successful") {
-                                $('#alert-success').show();
-                            }
-                            else {
-                                $('#alert-danger').show();
-                                $('#pageContent').show();
-                            }
-                        },
-                        error: function (msg, status, jqxhr) {
-                            $('#alert-danger').show();
-                            $('#pageContent').show();
+             if(document.getElementById('title').value.length === 0
+                || document.getElementById('description').value.length === 0) {
+                $('#alert-missing-required-input').show();
+                $('#pageContent').show();
+             }
+            else {
+                var data = {
+                    'title': document.getElementById('title').value,
+                    'description': document.getElementById('description').value
+                };
+
+                $.ajax({
+                    url: '/add_publicserviceannouncement',
+                    type: 'post',
+                    data: data,
+                    success: function (msg) {
+                        if (msg === "successful") {
+                             $.ajax({
+                                url: '/deletenotification',
+                                type: 'post',
+                                data: data,
+                                success: function (msg) {
+                                    if (msg === "successful") {
+                                       postToFeed();
+                                    }
+                                    else {
+                                        $('#alert-danger').show();
+                                        $('#pageContent').show();
+                                    }
+                                },
+                                error: function (msg, status, jqxhr) {
+                                    $('#alert-danger').show();
+                                    $('#pageContent').show();
+                                }
+                            });
                         }
-                    });
+                        else {
+                            $('#alert-danger').show();
+                            $('#input-form').show();
+                        }
+                    },
+                    error: function (msg, status, jqxhr) {
+                        $('#alert-danger').show();
+                        $('#input-form').show();
+                    }
+                });
+            }
+
+
+
+
+
+
         });
      });
 
@@ -86,60 +143,149 @@
     <div id="pageContent">
         <div class="row">
             <div class="col-md-12">
-                <h3>{{ page_name }}</h3>
+                 <h3 class="display-4">{{ page_name }}</h3>
             </div>
         </div>
-        <div class="row">
-            <div class = "col-md-3">
-               <h4>Message Title:</h4>
-            </div>
+
+
+        <div id="input-form">
+            <form action="" method="post"> {% csrf_token %}
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="title">Title</label>
+                        <input id="title" class="form-control" value="{{ message_title }}" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="description">Description</label>
+                        <textarea id="description" class="form-control" rows="3" required>{{ message }}</textarea>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h6>Share to:</h6>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" id="selectFB" class="form-check-input" value="Facebook">Facebook
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" id="selectTt" class="form-check-input" value="Twitter">Twitter
+                            </label>
+                        </div>
+                        <div class="form-check-inline disabled">
+                            <label class="form-check-label">
+                                <input type="checkbox" id="selectSMS" class="form-check-input" value="SMS">SMS
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-auto">
+                        <button class="btn btn-success btn-block open-new-psa-dialog mb-3" onclick="return confirmSubmission();">
+                            Publish Public Service Announcement
+                        </button>
+                    </div>
+                </div>
+                <div id='fb-root'></div>
+                <script src='http://connect.facebook.net/en_US/all.js'></script>
+            </form>
+            <script>
+                FB.init({appId: "180372472877494", status: true, cookie: true});
+                function postToFeed() {
+                    var new_post = $('#title').val();
+                    new_post = new_post + ", "+ $('textarea#description').val();
+                    var select_FB = document.getElementById("selectFB");
+                    var select_Twitter = document.getElementById("selectTt");
+                    var select_SMS = document.getElementById("selectSMS");
+
+                    if (new_post === ""){
+                        alert('No PSA selected.');
+                    }
+                    else if(select_FB.checked===false && select_Twitter.checked === false && select_SMS.checked === false){
+                        alert('No media selected.');
+                    }
+                    else{
+                        if(select_FB.checked === true){
+                            var body = new_post;
+                            var a_token = "EAACkDD0sUbYBABv3sjixFCE0OozHICJZAI4dI3xTnGI5PsU6Lk6LhIHfLm0y2BOluxU2gY3JJeHSdhxkJynwZCMoGhN5nZAZCKe5HHrB1xvZAQOt2x4z9l6ZAD7gXXnEB6v1FcCcZCIK2vZAeb3G1iDUFaaI4PCxVshWwVxe9oOg9gZDZD\n"
+                            FB.api('/174250080113064/feed', 'post', { message: body, access_token: a_token }, function(response) {
+                                if (!response){
+                                    alert('No response.');
+                                }
+                                else if (response.error) {
+                                    alert('Error occured'+ response.error.message );
+                                }
+                                else {
+                                     $('#alert-success').show();
+                                     $('#content').hide();
+                                }
+                            });
+                        }
+                        if(select_Twitter.checked === true){
+                           var url = "https://twitter.com/intent/tweet";
+
+                           var msg = new_post;
+                           window.open(url+"?text=" + msg,"", "width=500,height=300");
+                        }
+                        if(select_SMS.checked === true){
+
+                             var data = {
+                                    'msg': new_post
+                             };
+
+                            $.ajax({
+                                    url: '/announcements/sms',
+                                    type: 'post',
+                                    data: data,
+                                    success: function (msg) {
+                                        if (msg === "successful") {
+                                             $('#alert-success').show();
+                                             $('#content').hide();
+                                        }
+                                        else {
+
+                                        }
+                                    },
+                                    error: function (msg, status, jqxhr) {
+
+                                    }
+                            });
+                        }
+                    }
+                }
+            </script>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-               <h4><small>{{ message_title }}</small></h4>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <h4>Message</h4>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-               <h4><small>{{ message }}</small></h4>
-            </div>
-        </div>
-         <div class="row">
-            <div class="col-md-12">
-                <h4>Share to:</h4>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3">
-                <table class="table">
-                    <tbody>
-                        <tr>
-                          <th scope="row">Twitter</th>
-                          <td>{{ twitter }}</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Facebook</th>
-                          <td>{{ facebook }}</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">SMS</th>
-                          <td>{{ sms }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <button id="btnDone" class="btn btn-success btn-md"  type="submit" >
-                Mark as Done
-        </button>
     </div>
 
 
+    <div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="saveModalLabel">Is the information correct?</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
 
+                <div class="modal-body">
+                    <h4 id="new-modal-title"></h4>
+                    <p id="new-modal-description"></p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" id="btnDone">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock content %}
