@@ -86,7 +86,9 @@ def validate_incidentreport(request):
 
     return render(request, 'reports/validate_incidentreport.html', {
         'page_name': 'Validate Incident Report',
-        'incident_report': ir_formatted
+        'incident_report': ir_formatted,
+        'description': ir_formatted['Description'],
+        'crisis_level': ir_formatted['Crisis Level']
     })
 
 # Start of apis

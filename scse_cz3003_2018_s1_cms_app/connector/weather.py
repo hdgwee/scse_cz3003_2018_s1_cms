@@ -15,6 +15,7 @@ def get_weather(request):
         'east': geodata['items'][0]['forecasts'][9]['forecast'],
         'west': geodata['items'][0]['forecasts'][6]['forecast'],
         'north': geodata['items'][0]['forecasts'][32]['forecast'],
-        'south': geodata['items'][0]['forecasts'][12]['forecast']
+        'south': geodata['items'][0]['forecasts'][12]['forecast'],
+        'central': geodata['items'][0]['forecasts'][2]['forecast']
     }
     return JsonResponse(data)

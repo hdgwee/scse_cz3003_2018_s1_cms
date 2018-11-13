@@ -82,12 +82,35 @@
                     data: data,
                     success: function (msg) {
                         if (msg === "successful") {
+                            alert("hi");
                             $('#alert-success').show();
 
                             database = firebase.database().ref().child("notificationER");
 
                             database.push().set({
                                 id: {{ incident_report.ReportID }}
+                            });
+                            var msg = "Crisis Level:{{ crisis_level }}, Description: {{ description }}";
+                            var data = {
+                                 'msg': msg
+                            }
+                            alert(msg);
+                            $.ajax({
+                                    url: '/announcements/sms',
+                                    type: 'post',
+                                    data: data,
+                                    success: function (msg) {
+                                        if (msg === "successful") {
+                                             $('#alert-success').show();
+                                             $('#content').hide();
+                                        }
+                                        else {
+
+                                        }
+                                    },
+                                    error: function (msg, status, jqxhr) {
+
+                                    }
                             });
 
                         }
