@@ -213,12 +213,12 @@
             <div id="fields" class="col-md-12">
                 {% for field, entry in incident_report.items %}
                     <div class="form-group">
-                        <label for="name">{{ field }}</label>
+                        <label for="name"><b>{{ field }}</b></label>
                         <p class="form-control-static" id="name" class="form-control" required>{{ entry }}</p>
                     </div>
                 {%  endfor %}
                 <div class="form-group">
-                    <label>Emergency Response Agencies</label>
+                    <label><b>Emergency Response Agencies</b></label>
                     <label class="checkbox-inline">
                         <input type="checkbox" id="scdf"> SCDF
                     </label>
@@ -230,7 +230,7 @@
                     </label>
                 </div>
                 <div class="form-group" id="severity">
-                    <label>Severity</label>
+                    <label><b>Severity</b></label>
                     <div class="radio">
                         <label>
                             <input type="radio" name="optionsRadios" id="low" value="low" checked="">Low
