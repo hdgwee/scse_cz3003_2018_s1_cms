@@ -49,10 +49,6 @@
 
          $('#btnDone').click( function () {
              $('#pageContent').hide();
-              var data = {
-                  'key': getUrlVars()["tag"]
-              }
-
              if(document.getElementById('title').value.length === 0
                 || document.getElementById('description').value.length === 0) {
                 $('#alert-missing-required-input').show();
@@ -70,6 +66,9 @@
                     data: data,
                     success: function (msg) {
                         if (msg === "successful") {
+                             var data = {
+                                'key': getUrlVars()["tag"]
+                             }
                              $.ajax({
                                 url: '/deletenotification',
                                 type: 'post',
@@ -173,17 +172,17 @@
                     <div class="col-md-12">
                         <div class="form-check-inline">
                             <label class="form-check-label">
-                                <input type="checkbox" id="selectFB" class="form-check-input" value="Facebook">Facebook
+                                <input type="checkbox" id="selectFB" class="form-check-input" value="Facebook" {{ facebook }}>Facebook
                             </label>
                         </div>
                         <div class="form-check-inline">
                             <label class="form-check-label">
-                                <input type="checkbox" id="selectTt" class="form-check-input" value="Twitter">Twitter
+                                <input type="checkbox" id="selectTt" class="form-check-input" value="Twitter" {{ twitter }}>Twitter
                             </label>
                         </div>
                         <div class="form-check-inline disabled">
                             <label class="form-check-label">
-                                <input type="checkbox" id="selectSMS" class="form-check-input" value="SMS">SMS
+                                <input type="checkbox" id="selectSMS" class="form-check-input" value="SMS" {{ sms }}>SMS
                             </label>
                         </div>
                     </div>

@@ -3,6 +3,7 @@ from django.shortcuts import render
 from firebase import firebase
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 temp = firebase.FirebaseApplication('https://testapp-ab172.firebaseio.com/', None)
 
 def notification_read(request):
@@ -21,17 +22,17 @@ def notification_read(request):
     facebook = int(result['facebook'])
     twitter = int(result['twitter'])
     if sms == 1:
-        sms = "Yes"
+        sms = "checked"
     else:
         sms = "No"
 
     if facebook == 1:
-        facebook = "Yes"
+        facebook = "checked"
     else:
         facebook = "No"
 
     if twitter == 1:
-        twitter = "Yes"
+        twitter = "checked"
     else:
         twitter = "No"
 
@@ -79,3 +80,5 @@ def psamessagefrompmo(request):
 
     print(result)
     return HttpResponse('Success')
+
+

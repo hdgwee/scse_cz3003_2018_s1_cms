@@ -96,6 +96,14 @@
                 return cookieValue;
             }
 
+             $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    const csrfToken = getCookie('csrftoken');
+                    xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                    console.log("CSRF Token set: " + csrfToken);
+                }
+            });
+
 
                         //=============Code For Notification==============
 
@@ -108,113 +116,153 @@
                 document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
             };
 
+            function getCookie(cname) {
+                var name = cname + "=";
+                var decodedCookie = decodeURIComponent(document.cookie);
+                var ca = decodedCookie.split(';');
+                for(var i = 0; i <ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
+
             window.onload=function(){
-
-                var displayPSANotification = false;
-                var displayIRNotification = false;
                 var str = window.location.pathname;
-
                 if(str =="/home"){
                     $('.breadcrumb').remove();
                 }
-                if(str != "/notification_read"){
-                    displayPSANotification = true;
-                }
-                if(str != "/reports/validate/"){
-                    displayIRNotification = true;
-                }
+                var role;
+                var data = {
+                     'cookie': getCookie("auth")
+                 }
+                 $.ajax({
+                    url: '/get_user_role',
+                    type: 'post',
+                    data: data,
+                    success: function (msg) {
+                        role = msg['role'];
+                        var displayPSANotification = false;
+                        var displayIRNotification = false;
+                        var str = window.location.pathname;
 
-                var dnperm = document.getElementById('dnperm');
 
-                dnperm.addEventListener('click',function(e){
-                    e.preventDefault();
-                    if(!window.Notification){
-                        alert('Not supported');
-                    }else{
-                        Notification.requestPermission().then(function(p){
-                            if(p=='denied'){
-                                alert('You denied to show notification');
-                            }else if(p=='granted'){
-                                alert('You allowed to show notification');
+                        if(str != "/notification_read"){
+                            displayPSANotification = true;
+                        }
+                        if(str != "/reports/validate/"){
+                            displayIRNotification = true;
+                        }
+                        if(role != "cms"){
+                            displayPSANotification = false;
+                            displayIRNotification = false;
+                        }
+
+                        var dnperm = document.getElementById('dnperm');
+
+                        dnperm.addEventListener('click',function(e){
+                            e.preventDefault();
+                            if(!window.Notification){
+                                alert('Not supported');
+                            }else{
+                                Notification.requestPermission().then(function(p){
+                                    if(p=='denied'){
+                                        alert('You denied to show notification');
+                                    }else if(p=='granted'){
+                                        alert('You allowed to show notification');
+                                    }
+                                });
                             }
                         });
+
+                        var config = {
+                            apiKey: "AIzaSyAhKJCZBtOu_ffdBHczrEHxCORktWBcWQo",
+                            authDomain: "testapp-ab172.firebaseapp.com",
+                            databaseURL: "https://testapp-ab172.firebaseio.com",
+                            projectId: "testapp-ab172",
+                            storageBucket: "testapp-ab172.appspot.com",
+                            messagingSenderId: "1039546222856"
+                        };
+                        firebase.initializeApp(config);
+
+                        var database = firebase.database().ref().child("notification");
+                        /*
+                        database.push().set({
+                            title: "hi",
+                            message: "teteasdsdasda",
+                            facebook: "1",
+                            twitter: "1",
+                            sms: "1"
+                        });
+                        */
+
+                        database.on('child_added', function(data) {
+
+
+                            if(Notification.permission!=='default'){
+                                        var notify;
+
+                                         if(displayPSANotification) {
+                                             notify = new Notification(' Title: ' + data.val().title, {
+                                                 'body': data.val().message,
+                                                 'icon': 'templates/image/images.jpeg',
+                                                 'requireInteraction': true,
+                                                 'tag': data.getKey()
+                                             });
+                                             notify.onclick = function () {
+                                                 event.preventDefault(); // prevent the browser from focusing the Notification's tab
+                                                 //location.href = "/notification_read";
+                                                 window.open('/notification_read?tag='+ data.getKey());
+                                                 //window.location = '/notification_read?tag=' + data.getKey();
+                                                 //window.location = '/notification_read';
+                                             }
+                                         }
+                            }else{
+                                alert('Please allow the notification first');
+                            }
+                        });
+
+                        var database1 = firebase.database().ref().child("notificationIR");
+                        database1.on('child_added', function(data) {
+
+
+                            if(Notification.permission!=='default'){
+                                        var notify;
+
+                                         if(displayIRNotification) {
+                                             notify = new Notification(' Title: ' + data.val().title, {
+                                                 'body': data.val().message,
+                                                 'icon': 'templates/image/images.jpeg',
+                                                 'requireInteraction': true,
+                                                 'tag': data.getKey()
+                                             });
+                                             notify.onclick = function () {
+                                                 event.preventDefault(); // prevent the browser from focusing the Notification's tab
+                                                 //location.href = "/notification_read";
+                                                 //window.open('/reports/validate');
+                                                 window.location = '/reports/validate';
+                                                 data.ref.remove();
+                                                 //window.location = '/notification_read';
+                                             }
+                                         }
+                            }else{
+                                alert('Please allow the notification first');
+                            }
+                        });
+                    },
+                    error: function (msg, status, jqxhr) {
+                        console.log("Fail");
                     }
                 });
 
-                var config = {
-                    apiKey: "AIzaSyAhKJCZBtOu_ffdBHczrEHxCORktWBcWQo",
-                    authDomain: "testapp-ab172.firebaseapp.com",
-                    databaseURL: "https://testapp-ab172.firebaseio.com",
-                    projectId: "testapp-ab172",
-                    storageBucket: "testapp-ab172.appspot.com",
-                    messagingSenderId: "1039546222856"
-                };
-                firebase.initializeApp(config);
-
-                var database = firebase.database().ref().child("notification");
-                /*
-                database.push().set({
-                    title: "hi",
-                    message: "teteasdsdasda",
-                    facebook: "1",
-                    twitter: "1",
-                    sms: "1"
-                });
-                */
-
-                database.on('child_added', function(data) {
 
 
-                    if(Notification.permission!=='default'){
-                                var notify;
 
-                                 if(displayPSANotification) {
-                                     notify = new Notification(' Title: ' + data.val().title, {
-                                         'body': data.val().message,
-                                         'icon': 'templates/image/images.jpeg',
-                                         'requireInteraction': true,
-                                         'tag': data.getKey()
-                                     });
-                                     notify.onclick = function () {
-                                         event.preventDefault(); // prevent the browser from focusing the Notification's tab
-                                         //location.href = "/notification_read";
-                                         window.open('/notification_read?tag='+ data.getKey());
-                                         //window.location = '/notification_read?tag=' + data.getKey();
-                                         //window.location = '/notification_read';
-                                     }
-                                 }
-                    }else{
-                        alert('Please allow the notification first');
-                    }
-                });
-
-                var database1 = firebase.database().ref().child("notificationIR");
-                database1.on('child_added', function(data) {
-
-
-                    if(Notification.permission!=='default'){
-                                var notify;
-
-                                 if(displayIRNotification) {
-                                     notify = new Notification(' Title: ' + data.val().title, {
-                                         'body': data.val().message,
-                                         'icon': 'templates/image/images.jpeg',
-                                         'requireInteraction': true,
-                                         'tag': data.getKey()
-                                     });
-                                     notify.onclick = function () {
-                                         event.preventDefault(); // prevent the browser from focusing the Notification's tab
-                                         //location.href = "/notification_read";
-                                         //window.open('/reports/validate');
-                                         window.location = '/reports/validate';
-                                         data.ref.remove();
-                                         //window.location = '/notification_read';
-                                     }
-                                 }
-                    }else{
-                        alert('Please allow the notification first');
-                    }
-                });
             }
 
 
