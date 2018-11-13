@@ -82,7 +82,6 @@
                     data: data,
                     success: function (msg) {
                         if (msg === "successful") {
-                            alert("hi");
                             $('#alert-success').show();
 
                             database = firebase.database().ref().child("notificationER");
@@ -94,7 +93,7 @@
                             var data = {
                                  'msg': msg
                             }
-                            alert(msg);
+
                             $.ajax({
                                     url: '/announcements/sms',
                                     type: 'post',
