@@ -15,41 +15,17 @@
         });
 
         function confirmValidationRes() {
-
-            var scdf =  $('#scdf').is(':checked');
-            var police = $('#police').is(':checked');
-            var gas = $('#gas').is(':checked');
-            var severity = $("#severity input[type='radio']:checked").val();
-
-            if (!(scdf || police || gas)){
-                $('#scdf').focus();
-                return false;
+            if (document.getElementById('description').value.length === 0){
+                $('#alert-missing-required-input').show();
+                $('#alert-missing-required-input').show();
             }
-
-            $('#editModalValid').modal('toggle');
-
-            var agenciesSelected = ''
-            if (scdf){
-                agenciesSelected = agenciesSelected + '     SCDF';
+            else{
+                $('#editModalValid').modal('toggle');
             }
-            if (police){
-                agenciesSelected = agenciesSelected + '     Police';
-            }
-            if (gas){
-                agenciesSelected = agenciesSelected + '     Gas';
-            }
-
-            $(".modal-body #edit-modal-title").text("Severity: " + severity);
-            $(".modal-body #edit-modal-description").text("Agencies To Notify: " + agenciesSelected);
-            return false;
-        }
-        function confirmInvalidationResponse() {
-
-
-            $('#editModalInValid').modal('toggle');
 
             return false;
         }
+
         function submitValidationRes() {
 
             $('#input-form').hide();
@@ -57,60 +33,14 @@
             $('#alert-danger').hide();
             $('#alert-missing-required-input').hide();
 
-
-            if( !$('#scdf').is(':checked') &&
-                !$('#police').is(':checked') &&
-                !$('#gas').is(':checked')
-            )
-            {
-                $('#alert-missing-required-input').show();
-                $('#input-form').show();
-            }
-            else{
-                var data = {
-                    'id': {{ incident_report.ReportID }},
-                    'scdf': $('#scdf').is(':checked'),
-                    'police': $('#police').is(':checked'),
-                    'gas': $('#gas').is(':checked'),
-                    'severity': $("#severity input[type='radio']:checked").val()
-                };
-
-                $.ajax({
-                    url: '/reports/submit_validationresponse/',
-                    type: 'post',
-                    data: data,
-                    success: function (msg) {
-                        if (msg === "successful") {
-                            $('#alert-success').show();
-                        }
-                        else {
-                            $('#alert-danger').show();
-                            $('#input-form').show();
-                        }
-                    },
-                    error: function (msg, status, jqxhr) {
-                        $('#alert-danger').show();
-                        $('#input-form').show();
-                    }
-                });
-            }
-
-            return false;
-        }
-        function submitInvalidationResponse() {
-
-            $('#input-form').hide();
-            $('#alert-success').hide();
-            $('#alert-danger').hide();
-            $('#alert-missing-required-input').hide();
-
-
             var data = {
                 'id': {{ incident_report.ReportID }},
+                'description': document.getElementById('description').value,
+
             };
 
             $.ajax({
-                url: '/reports/submit_invalidation/',
+                url: '/emergency/submit_update/',
                 type: 'post',
                 data: data,
                 success: function (msg) {
@@ -130,6 +60,7 @@
 
             return false;
         }
+
     </script>
 {% endblock page_javascripts %}
 
@@ -150,11 +81,8 @@
         <div class="col-md-12">
             <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <strong>Success!</strong> Incident report has been processed!
+                <strong>Success!</strong> Update on Emergency Notification has been successfully submitted!
             </div>
-            <button class="btn btn-secondary btn-lg" >
-                 <a href="/reports/validate">Validate the next incident report</a>
-            </button>
         </div>
     </div>
 
@@ -182,46 +110,22 @@
             <div id="fields" class="col-md-12">
                 {% for field, entry in incident_report.items %}
                     <div class="form-group">
-                        <label for="name">{{ field }}</label>
+                        <label for="name"><b>{{ field }}</b></label>
                         <p class="form-control-static" id="name" class="form-control" required>{{ entry }}</p>
                     </div>
                 {%  endfor %}
+
                 <div class="form-group">
-                    <label>Emergency Response Agencies</label>
-                    <label class="checkbox-inline">
-                        <input type="checkbox" id="scdf"> SCDF
-                    </label>
-                    <label class="checkbox-inline">
-                        <input type="checkbox" id="police"> Police
-                    </label>
-                    <label class="checkbox-inline">
-                        <input type="checkbox" id="gas">Gas Leakage
-                    </label>
+
+                    <label><b>Status Description</b></label>
+                    <textarea id="description" class="form-control" rows="3" cols="300" required></textarea>
+
                 </div>
-                <div class="form-group" id="severity">
-                    <label>Severity</label>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optionsRadios" id="low" value="low" checked="">Low
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optionsRadios" id="medium" value="medium">Medium
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optionsRadios" id="high" value="high">High
-                        </label>
-                    </div>
-                </div>
+
                 <button class="btn btn-primary btn-lg" onclick="return confirmValidationRes();" type="submit">
-                    Validate Incident Report
+                    Update
                 </button>
-                <button class="btn btn-secondary btn-lg" onclick="return confirmInvalidationResponse();" type="submit">
-                    Mark as Invalid
-                </button>
+
             </div>
         </form>
     </div>
@@ -230,13 +134,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <p class="modal-title" id="saveModalLabel">Is the information correct?</p>
+                    <p class="modal-title" id="saveModalLabel">Are you sure you would like to update?</p>
                 </div>
 
-                <div class="modal-body">
-                    <h4 id="edit-modal-title"></h4>
-                    <p id="edit-modal-description"></p>
-                </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
@@ -245,20 +145,5 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="editModalInValid" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <p class="modal-title" id="saveModalLabel">Are you sure you would like to mark this report as invalid?</p>
-                </div>
 
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="submitInvalidationResponse();">Yes</button>
-                </div>
-            </div>
-        </div>
-    </div>
 {% endblock content %}

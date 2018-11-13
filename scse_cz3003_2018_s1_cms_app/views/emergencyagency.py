@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import requests
 from django.shortcuts import render
-from scse_cz3003_2018_s1_cms_app.models import CrisisLevel, IncidentReport, Source
+from scse_cz3003_2018_s1_cms_app.models import CrisisLevel, IncidentReport, Source, EmergencyUpdates
 from decimal import Decimal
 import json
 import datetime
@@ -28,8 +28,13 @@ def updatestatus_notification(request):
     res, role = verifyRole(request, ['er'])
     if res != 'success':
         return res
+    key = request.GET.get("id", "no_key")
+    if "no_key" in key:
+        print("No Key Detected")
+        return HttpResponse('Error in retrieving incident report')
+
     all_incident_reports = IncidentReport.objects.values()
-    all_unseen_reports = all_incident_reports.filter(validated='unseen')
+    all_unseen_reports = all_incident_reports.filter(id=int(key))
     if len(all_unseen_reports) == 0:
         return render(request, 'reports/allincidentreport_validated.html')
     ir = all_unseen_reports[0]
@@ -52,3 +57,30 @@ def updatestatus_notification(request):
         'page_name': 'Update Status for Emergency Notification',
         'incident_report': ir_formatted
     })
+
+##################################################################
+#API
+##################################################################
+
+def submit_update(request):
+    if request.method == 'POST':
+        try:
+            id = request.POST.get('id')
+            description = request.POST.get('description')
+
+        except KeyError:
+            return HttpResponse('unsuccessful')
+
+        else:
+            eu = EmergencyUpdates()
+            eu.description=description
+            ir = IncidentReport.objects.get(id=id)
+            eu.incident_report = ir
+            dt = datetime.datetime.now()
+            eu.date_time = dt
+            eu.save()
+            return HttpResponse('successful')
+
+    else:
+        return HttpResponse('unsuccessful')
+

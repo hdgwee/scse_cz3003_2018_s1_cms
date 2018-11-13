@@ -57,14 +57,16 @@ def login(request):
 
 
 def home(request):
-    res, role = verifyRole(request, ['cms', 'po'])
+    res, role = verifyRole(request, ['cms', 'po', 'er'])
     if res != 'success':
         return res
     if role == 'po':
         return render(request, 'reports/create_incidentreport.html', {'page_name': "Homepage"})
-    else:
+    elif role == 'cms':
         return render(request, 'home.html', {'page_name': "Homepage"})
-
+    elif role == 'er':
+        return render(request, 'base_en.html', {'page_name': "Homepage"})
+    return HttpResponse('login failed')
 
 ########################################################################################################################
 # APIs

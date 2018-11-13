@@ -52,6 +52,12 @@ class IncidentReport(models.Model):
     validated = models.CharField(default='unseen', max_length=128)
 
 
+class EmergencyUpdates(models.Model):
+    id = models.AutoField(primary_key=True)
+    incident_report = models.ForeignKey(IncidentReport, on_delete=models.PROTECT)
+    date_time = models.DateTimeField()
+
+
 class StatusReport(models.Model):
     id = models.AutoField(primary_key=True)
     date_time = models.DateTimeField()

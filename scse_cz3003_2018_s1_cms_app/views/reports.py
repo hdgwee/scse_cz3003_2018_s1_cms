@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import requests
 from django.shortcuts import render
-from scse_cz3003_2018_s1_cms_app.models import CrisisLevel, IncidentReport, Source, StatusReport
+from scse_cz3003_2018_s1_cms_app.models import CrisisLevel, IncidentReport, Source, StatusReport, EmergencyUpdates
 from decimal import Decimal
 import json
 import datetime
@@ -95,7 +95,6 @@ def validate_incidentreport(request):
 @csrf_exempt
 def get_allincidentreport(request):
     all_incident_reports = IncidentReport.objects.values()
-
     for ir in all_incident_reports:
         dt = ir['date_time']
         # Pass a date to the ir so that it can be hidden
@@ -108,6 +107,10 @@ def get_allincidentreport(request):
         ir['crisis_level_id'] = CrisisLevel.objects.get(id=ir['crisis_level_id']).name
         ir['source_id'] = Source.objects.get(id=ir['source_id']).name
 
+        ir['en_description'] = 'des'
+        ir['datetime'] = 'time'
+        # ir['en_description'] = EmergencyUpdates.objects.get(id=ir['id'])[0].description
+        # ir['datetime'] = EmergencyUpdates.objects.get(id=ir['id'])[0].date_time
     # response = HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
     # print("getting all incidents",list(all_incident_reports))
     return HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')

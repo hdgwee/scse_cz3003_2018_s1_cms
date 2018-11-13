@@ -68,6 +68,8 @@ urlpatterns = [
 
     path('emergency/notification/', emergencyagency.updatestatus_notification, name='updatestatusofemergencynotification'),
 
+    path('emergency/submit_update/', emergencyagency.submit_update, name = 'submit_update'),
+
     #=====Notification=====#
     path('notification_read', notification.notification_read, name='notificationRead'),
 
