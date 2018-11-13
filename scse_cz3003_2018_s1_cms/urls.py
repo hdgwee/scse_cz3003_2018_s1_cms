@@ -3,7 +3,7 @@ from django.urls import path
 
 
 from scse_cz3003_2018_s1_cms_app.views import reports, announcements, login, notification, emergencyagency
-from scse_cz3003_2018_s1_cms_app.connector import psi, dengue
+from scse_cz3003_2018_s1_cms_app.connector import psi, dengue, weather
 
 
 urlpatterns = [
@@ -86,7 +86,7 @@ urlpatterns = [
 
     path('get_dengue_info', dengue.get_dengue_info, name='get_dengue_info'),
 
-    path('get_weather_forecast',weather.get_weather, name='get_weather'),
+    path('get_weather_forecast', weather.get_weather, name='get_weather'),
 
     #=====Eat=====#
     path('get_user_role', login.get_user_role, name='get_user_role')
