@@ -22,6 +22,7 @@
             var severity = $("#severity input[type='radio']:checked").val();
 
             if (!(scdf || police || gas)){
+                alert("Please select Agencies to dispatch");
                 $('#scdf').focus();
                 return false;
             }
@@ -82,6 +83,13 @@
                     success: function (msg) {
                         if (msg === "successful") {
                             $('#alert-success').show();
+
+                            database = firebase.database().ref().child("notificationER");
+
+                            database.push().set({
+                                id: {{ incident_report.ReportID }}
+                            });
+
                         }
                         else {
                             $('#alert-danger').show();
@@ -229,8 +237,8 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                    <h6 class="modal-title" id="saveModalLabel">Is the information correct?</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <p class="modal-title" id="saveModalLabel">Is the information correct?</p>
                 </div>
 
                 <div class="modal-body">
@@ -249,8 +257,8 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                    <h6 class="modal-title" id="saveModalLabel">Are you sure you would like to mark this report as invalid?</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <p class="modal-title" id="saveModalLabel">Are you sure you would like to mark this report as invalid?</p>
                 </div>
 
 

@@ -86,7 +86,7 @@ urlpatterns = [
 
     path('get_dengue_info', dengue.get_dengue_info, name='get_dengue_info'),
 
-    path('get_weather_forecast',weather.get_weather, name='get_weather'),
+    path('get_weather_forecast', weather.get_weather, name='get_weather'),
 
     #=====Eat=====#
     path('get_user_role', login.get_user_role, name='get_user_role')

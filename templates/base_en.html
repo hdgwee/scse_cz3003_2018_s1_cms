@@ -142,7 +142,7 @@
                 };
                 firebase.initializeApp(config);
 
-                var database = firebase.database().ref().child("notification");
+                var database = firebase.database().ref().child("notificationER");
                 /*
                 database.push().set({
                     title: "hi",
@@ -159,22 +159,20 @@
 
                     if(Notification.permission!=='default'){
                                 var notify;
-
-                                 if(displayPSANotification) {
-                                     notify = new Notification(' Title: ' + data.val().title, {
-                                         'body': data.val().message,
-                                         'icon': 'templates/image/images.jpeg',
+                                     notify = new Notification(' Title: URGENT!!!', {
+                                         'body': 'You have an Outstanding Incident Report',
                                          'requireInteraction': true,
                                          'tag': data.getKey()
                                      });
                                      notify.onclick = function () {
+                                         database.child(data.getKey()).remove();
                                          event.preventDefault(); // prevent the browser from focusing the Notification's tab
                                          //location.href = "/notification_read";
-                                         window.open('/notification_read?tag='+ data.getKey());
+                                         window.open('/emergency/notification?id='+ data.val().id);
                                          //window.location = '/notification_read?tag=' + data.getKey();
                                          //window.location = '/notification_read';
                                      }
-                                 }
+
                     }else{
                         alert('Please allow the notification first');
                     }
