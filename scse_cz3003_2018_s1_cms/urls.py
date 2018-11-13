@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 
-from scse_cz3003_2018_s1_cms_app.views import reports, announcements, login, notification
+from scse_cz3003_2018_s1_cms_app.views import reports, announcements, login, notification, emergencyagency
 from scse_cz3003_2018_s1_cms_app.connector import psi, dengue
 
 urlpatterns = [
@@ -61,6 +61,10 @@ urlpatterns = [
     path('login/', login.login, name='login'),
 
     path('authorization/', login.authorization, name='authorization'),
+
+    #=====Emergency=====#
+
+    path('notification/', emergencyagency.updatestatus_notification, name='updatestatusofemergencynotification'),
 
     #=====Notification=====#
     path('notification_read', notification.notification_read, name='notificationRead'),
