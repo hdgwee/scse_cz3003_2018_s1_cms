@@ -30,6 +30,7 @@ def create_incidentreport(request):
         return res
     crisis_level = CrisisLevel.objects.all()
     source = Source.objects.all()
+    print('source', source)
     return render(request, 'reports/create_incidentreport.html',
                   {'page_name': "Create Incident Report",
                    'crisis_level': crisis_level,

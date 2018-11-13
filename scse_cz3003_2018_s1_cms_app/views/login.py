@@ -61,7 +61,7 @@ def home(request):
     if res != 'success':
         return res
     if role == 'po':
-        return render(request, 'reports/create_incidentreport.html', {'page_name': "Homepage"})
+        return render(request, 'base_po.html', {'page_name': "Homepage"})
     elif role == 'cms':
         return render(request, 'home.html', {'page_name': "Homepage"})
     elif role == 'er':
