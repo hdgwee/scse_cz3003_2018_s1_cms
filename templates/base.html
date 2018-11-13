@@ -75,6 +75,7 @@
             .input-group-addon {
                 min-width: 128px;
             }
+
         </style>
 
         <!-- Method to get cookie sent by Django server -->
@@ -104,7 +105,7 @@
             });
 
 
-            //=============Code For Notification==============
+                        //=============Code For Notification==============
 
             function logout(){
                 delete_cookie('auth');
@@ -267,7 +268,6 @@
 
 
 
-
             //====================Ends Here=================
         </script>
 
@@ -286,6 +286,7 @@
 <body>
 {% block body %}
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
 
         <a class="navbar-brand" href="home">Central Management System</a>
 
@@ -310,11 +311,6 @@
               <a class="nav-link" href="/publish_publicserviceannouncement">
                 <i class="far fa-paper-plane"></i>
                 <span>Publish PSA</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/reports/create">
-                <i class="fas fa-plus-circle"></i>
-                <span>Create Incident Report</span></a>
             </li>
              <li class="nav-item">
               <a class="nav-link" href="/reports/status">

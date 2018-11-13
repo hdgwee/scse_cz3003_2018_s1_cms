@@ -38,7 +38,15 @@
         <div class="card-header">Login</div>
         <div class="card-body">
           <form action="/authorization/" method="post">
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
             <div class="form-group">
+
               <div class="form-label-group">
                   <input class="form-control" id="inputEmail" type="text" placeholder="Username" name="username" required="required" autofocus="autofocus">
                   <label for="inputEmail">Email address</label>

@@ -5,7 +5,7 @@ from django.shortcuts import render
 from twilio.rest import Client
 from django.conf import settings
 
-
+from scse_cz3003_2018_s1_cms_app.views.login import verifyRole
 from scse_cz3003_2018_s1_cms_app.connector.psi import get_psi_from_source
 from scse_cz3003_2018_s1_cms_app.connector.dengue import get_dengue_info_from_source
 from scse_cz3003_2018_s1_cms_app.models import PublicServiceAnnouncement
@@ -16,6 +16,9 @@ from scse_cz3003_2018_s1_cms_app.models import PublicServiceAnnouncement
 #######################################################################################################################
 
 def view_publicserviceannouncement(request):
+    res, role = verifyRole(request, ['cms'])
+    if res != 'success':
+        return res
     psa_list = PublicServiceAnnouncement.objects.all().filter(reusable=True)
     return render(request, 'publicserviceannouncement/view_publicserviceannouncement.html',
                   {
@@ -24,6 +27,9 @@ def view_publicserviceannouncement(request):
                   })
 
 def publish_publicserviceannouncement(request):
+    res, role = verifyRole(request, ['cms'])
+    if res != 'success':
+        return res
     psa_list = PublicServiceAnnouncement.objects.all().filter(reusable=True)
     return render(request, 'publicserviceannouncement/publish_publicserviceannouncement.html',
                   {
@@ -32,11 +38,17 @@ def publish_publicserviceannouncement(request):
                   })
 
 def new_publicserviceannouncement(request):
+    res, role = verifyRole(request, ['cms'])
+    if res != 'success':
+        return res
     return render(request, 'publicserviceannouncement/new_publicserviceannouncement.html',
                   {'page_name': "New Public Service Announcement"})
 
 
 def edit_publicserviceannouncement(request, id):
+    res, role = verifyRole(request, ['cms'])
+    if res != 'success':
+        return res
     try:
         psa = PublicServiceAnnouncement.objects.get(pk=id)
     except PublicServiceAnnouncement.DoesNotExist:
