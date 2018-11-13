@@ -55,6 +55,7 @@ class IncidentReport(models.Model):
 class EmergencyUpdates(models.Model):
     id = models.AutoField(primary_key=True)
     incident_report = models.ForeignKey(IncidentReport, on_delete=models.PROTECT)
+    description = models.CharField(max_length=128, default='Nil')
     date_time = models.DateTimeField()
 
 

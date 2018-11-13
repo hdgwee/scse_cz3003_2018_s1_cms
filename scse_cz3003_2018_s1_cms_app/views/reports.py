@@ -111,8 +111,17 @@ def get_allincidentreport(request):
 
         ir['en_description'] = 'des'
         ir['en_datetime'] = 'time'
-        # ir['en_description'] = EmergencyUpdates.objects.get(id=ir['id'])[0].description
-        # ir['datetime'] = EmergencyUpdates.objects.get(id=ir['id'])[0].date_time
+
+        try:
+            en_des = EmergencyUpdates.objects.get(incident_report=ir['id']).description
+            en_dt = EmergencyUpdates.objects.get(incident_report=ir['id']).date_time.strftime("%Y %B %d %I:%M%p")
+            print('success', en_des, en_dt)
+        except:
+            en_des = 'Emergency Agency Yet to update'
+            en_dt = 'Emergency Agency Yet to see'
+
+        ir['en_description'] = en_des
+        ir['en_datetime'] = en_dt
     # response = HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
     # print("getting all incidents",list(all_incident_reports))
     return HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
