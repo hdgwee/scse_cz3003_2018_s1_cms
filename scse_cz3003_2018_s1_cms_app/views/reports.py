@@ -110,7 +110,7 @@ def get_allincidentreport(request):
         ir['source_id'] = Source.objects.get(id=ir['source_id']).name
 
         ir['en_description'] = 'des'
-        ir['datetime'] = 'time'
+        ir['en_datetime'] = 'time'
         # ir['en_description'] = EmergencyUpdates.objects.get(id=ir['id'])[0].description
         # ir['datetime'] = EmergencyUpdates.objects.get(id=ir['id'])[0].date_time
     # response = HttpResponse(json.dumps(list(all_incident_reports)), content_type='application/json')
