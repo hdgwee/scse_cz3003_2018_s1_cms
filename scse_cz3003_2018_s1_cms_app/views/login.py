@@ -2,6 +2,8 @@ from django.views.decorators.csrf import csrf_exempt
 import requests
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
+from django.core import serializers
+from django.http import JsonResponse
 
 def verifyRole(view):
     def executeView(*args, **kwargs):
@@ -29,6 +31,23 @@ def verifyRole(view):
 ########################################################################################################################
 # Views
 ########################################################################################################################
+
+def get_user_role(request):
+    if request.method == 'POST':
+        try:
+            cookie = request.POST.get("cookie")
+        except KeyError:
+            return HttpResponse('unsuccessful')
+    dictToSend = {
+        'cookie': cookie
+    }
+    authenticatedRole = requests.post('http://localhost:5002/checkCookie', json=dictToSend)
+    print('role:123', authenticatedRole.text)
+
+    data = {
+        'role': authenticatedRole.text
+    }
+    return JsonResponse(data)
 
 
 def login(request):

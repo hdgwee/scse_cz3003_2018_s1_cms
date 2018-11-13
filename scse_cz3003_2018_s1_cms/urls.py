@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 
 from scse_cz3003_2018_s1_cms_app.views import reports, announcements, login, notification
-from scse_cz3003_2018_s1_cms_app.connector import psi, dengue
+from scse_cz3003_2018_s1_cms_app.connector import psi, dengue, weather
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -76,5 +76,10 @@ urlpatterns = [
     #=====Crawled Data=====#
     path('get_psi', psi.get_psi, name='get_psi'),
 
-    path('get_dengue_info', dengue.get_dengue_info, name='get_dengue_info')
+    path('get_dengue_info', dengue.get_dengue_info, name='get_dengue_info'),
+
+    path('get_weather_forecast',weather.get_weather, name='get_weather'),
+
+    #=====Eat=====#
+    path('get_user_role', login.get_user_role, name='get_user_role')
 ]
