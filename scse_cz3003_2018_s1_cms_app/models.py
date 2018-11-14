@@ -52,6 +52,15 @@ class IncidentReport(models.Model):
     validated = models.CharField(default='unseen', max_length=128)
 
 
+class IncomingReport(models.Model):
+    STATUS_CHOICES = [('U', 'Unread'), ('R', 'Read'), ('C', 'Completed')]
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=128)
+    description = models.TextField()
+    updated = models.DateTimeField(blank=True, auto_now = True)
+    status = models.CharField(choices=STATUS_CHOICES, max_length=1, default='U')
+
+
 class EmergencyUpdates(models.Model):
     id = models.AutoField(primary_key=True)
     incident_report = models.ForeignKey(IncidentReport, on_delete=models.PROTECT)

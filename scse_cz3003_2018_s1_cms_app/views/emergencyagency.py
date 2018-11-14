@@ -1,4 +1,4 @@
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.core import serializers
 from django.db.models import Q
@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import requests
 from django.shortcuts import render
-from scse_cz3003_2018_s1_cms_app.models import CrisisLevel, IncidentReport, Source, EmergencyUpdates
+from scse_cz3003_2018_s1_cms_app.models import CrisisLevel, IncidentReport, Source, EmergencyUpdates, IncomingReport
 from decimal import Decimal
 import json
 import datetime
@@ -23,6 +23,25 @@ from scse_cz3003_2018_s1_cms_app.views.login import verifyRole
 #########################################################################
 # views
 #########################################################################
+
+def main_emergencynotification(request):
+    report_list = IncomingReport.objects.all()
+    return render(request, 'emergencyresponse/main_emergencynotification.html',
+                  {
+                      'page_name': "Emergency Response Team",
+                      'report_list': report_list
+                  })
+
+def view_emergencynotification(request, id):
+    try:
+        notif = IncomingReport.objects.get(pk=id)
+    except IncomingReport.DoesNotExist:
+        raise Http404('Notification not found')
+    return render(request, 'emergencyresponse/view_emergencynotification.html',
+                  {
+                      'page_name': "View Emergency Notification",
+                      'notif': notif
+                  })
 
 def updatestatus_notification(request):
     res, role = verifyRole(request, ['er'])
@@ -84,3 +103,29 @@ def submit_update(request):
     else:
         return HttpResponse('unsuccessful')
 
+
+
+
+##################################################################
+#POST
+##################################################################
+
+def set_read(request):
+    if request.method == 'POST':
+        try:
+            id = request.POST.get('id')
+            title = request.POST.get('title')
+            description = request.POST.get('description')
+
+        except KeyError:
+            return HttpResponse('unsuccessful')
+        else:
+            report = IncidentReport.objects.get(pk=id)
+            report.title = title
+            report.description = description
+            report.status = 'C'
+            report.save()
+
+            return HttpResponseRedirect("")
+    else:
+        return HttpResponse('unsuccessful')

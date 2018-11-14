@@ -26,6 +26,10 @@ urlpatterns = [
     path('edit_publicserviceannouncement/<int:id>', announcements.edit_publicserviceannouncement
          , name='edit_publicserviceannouncement'),
 
+    path('main_emergencynotification', emergencyagency.main_emergencynotification, name='main_emergencynotification'),
+
+    path('view_emergencynotification/<int:id>',emergencyagency.view_emergencynotification, name='view_emergencynotification'),
+
     ###################################################################################################################
     # HTTP POST Requests
     path('add_publicserviceannouncement', announcements.add_publicserviceannouncement
@@ -69,6 +73,8 @@ urlpatterns = [
     path('emergency/notification/', emergencyagency.updatestatus_notification, name='updatestatusofemergencynotification'),
 
     path('emergency/submit_update/', emergencyagency.submit_update, name = 'submit_update'),
+
+    path('emergency/set_read', emergencyagency.set_read, name ='set_read'),
 
     #=====Notification=====#
     path('notification_read', notification.notification_read, name='notificationRead'),
