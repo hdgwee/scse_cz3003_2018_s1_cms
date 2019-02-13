@@ -1,6 +1,17 @@
 # Crisis Management System
-* Central Management sub-system
-* Emergency Agency sub-system
+A system that allows seamless collaboration between government agencies in times of emergency. The CMS serves as a command-and-control platform to respond quickly to needs and dangerous conditions.
+
+* Prime Minister Office Sub-system
+..* Allows ministers to receive up-to-date information by displaying location based information on a map
+..* Allows ministers to issue emergency notifications
+
+* Central Management System Sub-system
+..* To manage security incidents submitted by public
+..* To manage public service announcement
+..* Extraction of atmospheric and geographical conditions information
+
+* Log In Subsystem
+..* To validate user login details and direct users to respective system mainlanding according to user type
 
 ### Getting Started
 
