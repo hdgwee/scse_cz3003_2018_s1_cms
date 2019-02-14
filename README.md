@@ -1,6 +1,6 @@
 # Crisis Management System
 
-![CMS GUI](https://raw.githubusercontent.com/hdgwee/scse_cz3003_2018_s1_cms/master/img/Screenshot_CMS.png)
+![CMS GUI](https://raw.githubusercontent.com/hdgwee/scse_cz3003_2018_s1_cms/master/img/Screenshot_CMS.jpg)
 
 A system that allows seamless collaboration between government agencies in times of emergency. The CMS serves as a command-and-control platform to respond quickly to needs and dangerous conditions.
 
